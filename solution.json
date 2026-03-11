@@ -1,0 +1,384 @@
+{
+  "abstract": "We propose the problem of designing a dynamic, continuously-adaptive activation function that embeds continual-learning inductive biases directly into neuron nonlinearity. The target activation should trade off plasticity versus stability so networks can incrementally integrate concepts from multiple domains without catastrophic forgetting, while remaining scalable (avoiding saturation/dead neurons) and self-stabilizing (preserving bounded mean/variance across layers). Crucially, this mechanism must not rely on predefined task counts, explicit task identities, or brittle masking hacks; instead it should fold related concepts into shared representations and enable layer-wise progressive knowledge integration and reuse so that higher-level abstractions and deductive reasoning can emerge.",
+  "artifacts": [
+    {
+      "kind": "github_repo",
+      "label": "GitHub Repo",
+      "uri": "https://github.com/omegaXiv-labs/omegaXiv-run-f1be1c20-5f6f-4b5c-85c2-3440e8b965c9"
+    },
+    {
+      "kind": "paper_pdf",
+      "label": "Paper PDF",
+      "uri": "https://raw.githubusercontent.com/omegaXiv-labs/omegaXiv-run-f1be1c20-5f6f-4b5c-85c2-3440e8b965c9/main/paper/main.pdf"
+    },
+    {
+      "kind": "paper_thumbnail",
+      "label": "Paper Thumbnail",
+      "uri": "https://raw.githubusercontent.com/omegaXiv-labs/omegaXiv-run-f1be1c20-5f6f-4b5c-85c2-3440e8b965c9/main/paper/thumbnail.png"
+    },
+    {
+      "kind": "latex_sources",
+      "label": "LaTeX Sources",
+      "uri": "https://github.com/omegaXiv-labs/omegaXiv-run-f1be1c20-5f6f-4b5c-85c2-3440e8b965c9/blob/main/paper/main.tex"
+    },
+    {
+      "kind": "sources",
+      "label": "Sources",
+      "uri": "https://github.com/omegaXiv-labs/omegaXiv-run-f1be1c20-5f6f-4b5c-85c2-3440e8b965c9/blob/main/sources/sources.json"
+    }
+  ],
+  "artifacts_summary": "Exports include a compile-ready LaTeX manuscript (paper/main.tex), generated bibliography (paper/references.bib), equation trace map (paper/EQUATION_USAGE_MAP.md), and compiled PDF (paper/main.pdf). Manuscript references two vector-PDF figures, five table/data artifacts, and seven code artifacts from validation_simulation outputs.",
+  "compute_budget": "1 APU Apple Silicon 128 GB (M3 Max mit 16\u2011Core CPU)",
+  "constraints": [
+    "No predefined task counts, explicit task identities, or task-specific masks.",
+    "No brittle masking hacks or reliance on per-task mask storage.",
+    "Activation should avoid dead neurons and hard saturation to preserve gradient flow.",
+    "Activation should maintain bounded signal statistics (mean/variance) across layers.",
+    "Parameter/memory overhead must remain modest for deep and wide models.",
+    "Mechanism should remain task-agnostic and adapt continuously online."
+  ],
+  "context_id": "bc36d98c-6b8e-435c-8783-221723ad93ff",
+  "created_at": "2026-03-11T09:54:23.174922+00:00",
+  "dataset_links": [
+    "https://github.com/awarelab/continual_world"
+  ],
+  "difficulty": "Exploratory",
+  "domain": "Machine Learning / Reinforcement Learning",
+  "evaluation_plan": "Run continual-learning streams (permuted MNIST, Split CIFAR, sequential Omniglot/miniImageNet, and synthetic domain-shift/compositional streams), compare against ReLU/GELU/SELU and mask/normalization baselines, and report average sequential accuracy, forward/backward transfer, forgetting index, adaptation speed, representational drift/similarity (RKHS/CCA), layerwise mean/variance, gradient norms, dead-unit fraction, plus compositional/deductive probe performance and ablations of plasticity-stability controls.",
+  "expected_artifacts": [
+    "Paper",
+    "Code",
+    "Model"
+  ],
+  "full_description": "Problem statement\nDesign, implement, and evaluate an activation-function architecture A(x; \u03b8_t, s_t, state) that (1) dynamically adapts during continual training to integrate new concepts, (2) preserves previously learned concepts (minimizes catastrophic forgetting) without explicit task identifiers or task-specific masks, and (3) enforces stable signal statistics and scalable gradients so networks remain trainable at depth and do not develop dead neurons or exploding activations.\n\nMotivation and desiderata\n- Continual-learning bias inside activations: Existing continual-learning solutions (supermasks, gating, weight stabilization) are effective but often require task IDs, additional memory, or architectural hacks. Embedding a continual-learning inductive bias into the activation function could provide a lightweight, layer-local mechanism for balancing plasticity (to learn new concepts) and stability (to preserve old concepts).\n- Scalability: The activation must avoid hard saturation (prevent dead neurons) and preserve gradient flow across many layers and long training sequences. It should exhibit self-normalizing behavior (maintain means/variances within bounds) to reduce need for external normalization.\n- Dynamic, task-agnostic adaptation: The activation must adapt online to new data distributions without knowing the number of domains or task boundaries, and without relying on explicit masking or external retrieval mechanisms.\n- Representation reuse and progressive abstraction: The function should encourage folding of semantically similar inputs into nearby activations, enabling layer-wise progressive integration and reuse of substructures so abstract, compositional concepts and simple deductive reasoning can emerge from continual exposure.\n\nFunctional requirements\n1. Plasticity\u2013stability control:\n   - A local mechanism (e.g., learned gating, memory-augmented modulation, or history-dependent parameters) that modulates effective nonlinearity per neuron based on recent weight/activation usage or importance scores.\n   - The mechanism should permit high plasticity for underused directions and increased stability for directions deemed important for prior data, without explicit task labels.\n\n2. Self-normalization and bounded dynamics:\n   - Activations should keep mean \u2248 0 and variance \u2248 1 (or within provable bounds) across layers in expectation under realistic input distributions, minimizing need for batch/statistics layers.\n   - Prove or empirically demonstrate bounds on activation variance (no exploding/vanishing gradients).\n\n3. Non-saturating, high-expressivity behavior:\n   - Avoid regimes where neurons become permanently inactive (dead ReLU problem) or saturate (vanishing gradients). Prefer smooth transitions or graded weighting (e.g., value-weighted gating like GELU) that preserve gradient information for small and large inputs.\n\n4. Task-agnostic continuous integration:\n   - No explicit task ID required at training or test time.\n   - The activation can detect novelty or distributional mismatch and allocate representational capacity (e.g., by locally increasing plasticity or allocating a new subspace) while preserving previously consolidated subspaces.\n\n5. Compact, trainable parameterization:\n   - Parameter budget per neuron or per layer should be modest (comparable to scalar biases or light modulators), enabling scaling to deep, wide networks without large memory overhead.\n   - Optionally allow small global controller parameters to coordinate plasticity\u2013stability scheduling.\n\nEvaluation protocol and metrics\n- Continual learning streams:\n  - Standard benchmarks: permuted MNIST, Split CIFAR, sequential Omniglot/miniImageNet tasks, and longer synthetic domain streams that probe distributional shifts and incremental concept composition.\n  - Large-scale sequential multi-domain tasks (language + vision) where appropriate.\n- Forgetting and retention:\n  - Average accuracy across tasks after sequential exposure; forward/backward transfer metrics; forgetting index.\n- Plasticity metrics:\n  - Speed of adaptation to new tasks (few-shot loss decrease), representational change measures (RKHS/CCA between activations over time).\n- Stability and numerical properties:\n  - Layerwise mean/variance statistics over time; gradient norms; fraction of dead/inactive units.\n- Emergence of abstraction/deduction:\n  - Probe tasks for compositional generalization and simple deductive reasoning (synthetic rule induction, reasoning benchmarks), and measure representational reuse (similarity clustering of concept embeddings).\n- Ablations:\n  - Compare against baseline activations (ReLU, GELU, SELU), sup-sup/mask methods, and normalization schemes (batch/LayerNorm).\n\nConcrete design directions (non-exclusive)\n- History-aware activation: activation parameters updated via an exponential moving average of recent gradients/activations to gate plasticity locally.\n- Memory-augmented modulation: small, per-neuron associative memory (e.g., key-value attractors) that biases the activation toward known subspaces when input matches stored concepts.\n- Continuous soft-supermask: per-neuron continuous gating variable learned online (not discrete masks, no task ID) that sparsifies activations adaptively and can be regularized to encourage non-overlap between concept subspaces.\n- Probabilistic activation: treat activation output as sample from a small conditional distribution whose parameters adapt with Bayesian updates to balance prior (stability) and likelihood (plasticity).\n- Regularizers that encourage folded representations: contrastive or clustering losses that pull semantically related patterns together and penalize destructive overlap with existing concepts.\n\nConstraints and practical considerations\n- No reliance on storing per-task masks or task identities.\n- Compute and memory overhead must be small enough to integrate into large models (transformers, convnets).\n- Prefer mechanisms that allow theoretical analysis of stability (e.g., contraction maps, variance bounds) or at least strong empirical evidence across depths and long task streams.\n\nExpected contributions and outcomes\n- A new class of activation functions that internalize continual-learning biases and enable continual integration of knowledge with minimal overhead.\n- Theory or empirical guarantees on self-normalization and non-saturation.\n- Demonstrations that such activations reduce catastrophic forgetting, allow faster adaptation to new domains, and promote layer-wise reuse and abstraction emergence without external masking or task signals.\n\nDesired deliverables for a first study\n- Definition of a parametric activation design (functional form + update rule).\n- Proof sketch or empirical demonstration of self-normalization and bounded variance.\n- Continual-learning experiments comparing against baselines on standard streams and synthetic compositional tasks.\n- Ablation study showing plasticity\u2013stability trade-offs and visualization of representational folding and reuse.",
+  "goals": [
+    "Define a dynamic activation architecture A(x; \u03b8_t, s_t, state) for continual learning without explicit task identifiers.",
+    "Demonstrate improved plasticity-stability trade-off and reduced catastrophic forgetting versus baseline activations.",
+    "Establish self-normalization and bounded variance behavior theoretically or empirically.",
+    "Evaluate representational reuse and abstraction emergence under sequential multi-domain training.",
+    "Deliver paper, code, and trained model artifacts for a first study."
+  ],
+  "key_terms": [
+    "continual learning",
+    "catastrophic forgetting",
+    "plasticity-stability trade-off",
+    "dynamic activation function",
+    "self-normalization",
+    "bounded variance",
+    "non-saturating nonlinearities",
+    "task-agnostic adaptation",
+    "representation reuse",
+    "compositional generalization",
+    "deductive reasoning probes",
+    "ReLU/GELU/SELU baselines",
+    "forward transfer",
+    "backward transfer",
+    "forgetting index"
+  ],
+  "original_problem": {
+    "compute_budget": "1 APU Apple Silicon 128 GB (M3 Max mit 16\u2011Core CPU)",
+    "constraints": [
+      "No predefined task counts, explicit task identities, or task-specific masks.",
+      "No brittle masking hacks or reliance on per-task mask storage.",
+      "Activation should avoid dead neurons and hard saturation to preserve gradient flow.",
+      "Activation should maintain bounded signal statistics (mean/variance) across layers.",
+      "Parameter/memory overhead must remain modest for deep and wide models.",
+      "Mechanism should remain task-agnostic and adapt continuously online."
+    ],
+    "dataset_links": [
+      "https://github.com/awarelab/continual_world"
+    ],
+    "difficulty": "Exploratory",
+    "domain": "Machine Learning / Reinforcement Learning",
+    "evaluation_plan": "Run continual-learning streams (permuted MNIST, Split CIFAR, sequential Omniglot/miniImageNet, and synthetic domain-shift/compositional streams), compare against ReLU/GELU/SELU and mask/normalization baselines, and report average sequential accuracy, forward/backward transfer, forgetting index, adaptation speed, representational drift/similarity (RKHS/CCA), layerwise mean/variance, gradient norms, dead-unit fraction, plus compositional/deductive probe performance and ablations of plasticity-stability controls.",
+    "expected_artifacts": [
+      "Paper",
+      "Code",
+      "Model"
+    ],
+    "full_description": "Problem statement\nDesign, implement, and evaluate an activation-function architecture A(x; \u03b8_t, s_t, state) that (1) dynamically adapts during continual training to integrate new concepts, (2) preserves previously learned concepts (minimizes catastrophic forgetting) without explicit task identifiers or task-specific masks, and (3) enforces stable signal statistics and scalable gradients so networks remain trainable at depth and do not develop dead neurons or exploding activations.\n\nMotivation and desiderata\n- Continual-learning bias inside activations: Existing continual-learning solutions (supermasks, gating, weight stabilization) are effective but often require task IDs, additional memory, or architectural hacks. Embedding a continual-learning inductive bias into the activation function could provide a lightweight, layer-local mechanism for balancing plasticity (to learn new concepts) and stability (to preserve old concepts).\n- Scalability: The activation must avoid hard saturation (prevent dead neurons) and preserve gradient flow across many layers and long training sequences. It should exhibit self-normalizing behavior (maintain means/variances within bounds) to reduce need for external normalization.\n- Dynamic, task-agnostic adaptation: The activation must adapt online to new data distributions without knowing the number of domains or task boundaries, and without relying on explicit masking or external retrieval mechanisms.\n- Representation reuse and progressive abstraction: The function should encourage folding of semantically similar inputs into nearby activations, enabling layer-wise progressive integration and reuse of substructures so abstract, compositional concepts and simple deductive reasoning can emerge from continual exposure.\n\nFunctional requirements\n1. Plasticity\u2013stability control:\n   - A local mechanism (e.g., learned gating, memory-augmented modulation, or history-dependent parameters) that modulates effective nonlinearity per neuron based on recent weight/activation usage or importance scores.\n   - The mechanism should permit high plasticity for underused directions and increased stability for directions deemed important for prior data, without explicit task labels.\n\n2. Self-normalization and bounded dynamics:\n   - Activations should keep mean \u2248 0 and variance \u2248 1 (or within provable bounds) across layers in expectation under realistic input distributions, minimizing need for batch/statistics layers.\n   - Prove or empirically demonstrate bounds on activation variance (no exploding/vanishing gradients).\n\n3. Non-saturating, high-expressivity behavior:\n   - Avoid regimes where neurons become permanently inactive (dead ReLU problem) or saturate (vanishing gradients). Prefer smooth transitions or graded weighting (e.g., value-weighted gating like GELU) that preserve gradient information for small and large inputs.\n\n4. Task-agnostic continuous integration:\n   - No explicit task ID required at training or test time.\n   - The activation can detect novelty or distributional mismatch and allocate representational capacity (e.g., by locally increasing plasticity or allocating a new subspace) while preserving previously consolidated subspaces.\n\n5. Compact, trainable parameterization:\n   - Parameter budget per neuron or per layer should be modest (comparable to scalar biases or light modulators), enabling scaling to deep, wide networks without large memory overhead.\n   - Optionally allow small global controller parameters to coordinate plasticity\u2013stability scheduling.\n\nEvaluation protocol and metrics\n- Continual learning streams:\n  - Standard benchmarks: permuted MNIST, Split CIFAR, sequential Omniglot/miniImageNet tasks, and longer synthetic domain streams that probe distributional shifts and incremental concept composition.\n  - Large-scale sequential multi-domain tasks (language + vision) where appropriate.\n- Forgetting and retention:\n  - Average accuracy across tasks after sequential exposure; forward/backward transfer metrics; forgetting index.\n- Plasticity metrics:\n  - Speed of adaptation to new tasks (few-shot loss decrease), representational change measures (RKHS/CCA between activations over time).\n- Stability and numerical properties:\n  - Layerwise mean/variance statistics over time; gradient norms; fraction of dead/inactive units.\n- Emergence of abstraction/deduction:\n  - Probe tasks for compositional generalization and simple deductive reasoning (synthetic rule induction, reasoning benchmarks), and measure representational reuse (similarity clustering of concept embeddings).\n- Ablations:\n  - Compare against baseline activations (ReLU, GELU, SELU), sup-sup/mask methods, and normalization schemes (batch/LayerNorm).\n\nConcrete design directions (non-exclusive)\n- History-aware activation: activation parameters updated via an exponential moving average of recent gradients/activations to gate plasticity locally.\n- Memory-augmented modulation: small, per-neuron associative memory (e.g., key-value attractors) that biases the activation toward known subspaces when input matches stored concepts.\n- Continuous soft-supermask: per-neuron continuous gating variable learned online (not discrete masks, no task ID) that sparsifies activations adaptively and can be regularized to encourage non-overlap between concept subspaces.\n- Probabilistic activation: treat activation output as sample from a small conditional distribution whose parameters adapt with Bayesian updates to balance prior (stability) and likelihood (plasticity).\n- Regularizers that encourage folded representations: contrastive or clustering losses that pull semantically related patterns together and penalize destructive overlap with existing concepts.\n\nConstraints and practical considerations\n- No reliance on storing per-task masks or task identities.\n- Compute and memory overhead must be small enough to integrate into large models (transformers, convnets).\n- Prefer mechanisms that allow theoretical analysis of stability (e.g., contraction maps, variance bounds) or at least strong empirical evidence across depths and long task streams.\n\nExpected contributions and outcomes\n- A new class of activation functions that internalize continual-learning biases and enable continual integration of knowledge with minimal overhead.\n- Theory or empirical guarantees on self-normalization and non-saturation.\n- Demonstrations that such activations reduce catastrophic forgetting, allow faster adaptation to new domains, and promote layer-wise reuse and abstraction emergence without external masking or task signals.\n\nDesired deliverables for a first study\n- Definition of a parametric activation design (functional form + update rule).\n- Proof sketch or empirical demonstration of self-normalization and bounded variance.\n- Continual-learning experiments comparing against baselines on standard streams and synthetic compositional tasks.\n- Ablation study showing plasticity\u2013stability trade-offs and visualization of representational folding and reuse.",
+    "goals": [
+      "Define a dynamic activation architecture A(x; \u03b8_t, s_t, state) for continual learning without explicit task identifiers.",
+      "Demonstrate improved plasticity-stability trade-off and reduced catastrophic forgetting versus baseline activations.",
+      "Establish self-normalization and bounded variance behavior theoretically or empirically.",
+      "Evaluate representational reuse and abstraction emergence under sequential multi-domain training.",
+      "Deliver paper, code, and trained model artifacts for a first study."
+    ],
+    "key_terms": [
+      "continual learning",
+      "catastrophic forgetting",
+      "plasticity-stability trade-off",
+      "dynamic activation function",
+      "self-normalization",
+      "bounded variance",
+      "non-saturating nonlinearities",
+      "task-agnostic adaptation",
+      "representation reuse",
+      "compositional generalization",
+      "deductive reasoning probes",
+      "ReLU/GELU/SELU baselines",
+      "forward transfer",
+      "backward transfer",
+      "forgetting index"
+    ],
+    "problem_type": "Open Question",
+    "related_links": [
+      "https://arxiv.org/abs/2006.14769",
+      "https://arxiv.org/abs/2602.05688",
+      "https://arxiv.org/abs/1606.08415",
+      "https://arxiv.org/abs/1802.01569"
+    ],
+    "request_text": "Title: Continual Learning Activation Function\nAbstract: We propose the problem of designing a dynamic, continuously-adaptive activation function that embeds continual-learning inductive biases directly into neuron nonlinearity. The target activation should trade off plasticity versus stability so networks can incrementally integrate concepts from multiple domains without catastrophic forgetting, while remaining scalable (avoiding saturation/dead neurons) and self-stabilizing (preserving bounded mean/variance across layers). Crucially, this mechanism must not rely on predefined task counts, explicit task identities, or brittle masking hacks; instead it should fold related concepts into shared representations and enable layer-wise progressive knowledge integration and reuse so that higher-level abstractions and deductive reasoning can emerge.\nFull Description: Problem statement\nDesign, implement, and evaluate an activation-function architecture A(x; \u03b8_t, s_t, state) that (1) dynamically adapts during continual training to integrate new concepts, (2) preserves previously learned concepts (minimizes catastrophic forgetting) without explicit task identifiers or task-specific masks, and (3) enforces stable signal statistics and scalable gradients so networks remain trainable at depth and do not develop dead neurons or exploding activations.\n\nMotivation and desiderata\n- Continual-learning bias inside activations: Existing continual-learning solutions (supermasks, gating, weight stabilization) are effective but often require task IDs, additional memory, or architectural hacks. Embedding a continual-learning inductive bias into the activation function could provide a lightweight, layer-local mechanism for balancing plasticity (to learn new concepts) and stability (to preserve old concepts).\n- Scalability: The activation must avoid hard saturation (prevent dead neurons) and preserve gradient flow across many layers and long training sequences. It should exhibit self-normalizing behavior (maintain means/variances within bounds) to reduce need for external normalization.\n- Dynamic, task-agnostic adaptation: The activation must adapt online to new data distributions without knowing the number of domains or task boundaries, and without relying on explicit masking or external retrieval mechanisms.\n- Representation reuse and progressive abstraction: The function should encourage folding of semantically similar inputs into nearby activations, enabling layer-wise progressive integration and reuse of substructures so abstract, compositional concepts and simple deductive reasoning can emerge from continual exposure.\n\nFunctional requirements\n1. Plasticity\u2013stability control:\n   - A local mechanism (e.g., learned gating, memory-augmented modulation, or history-dependent parameters) that modulates effective nonlinearity per neuron based on recent weight/activation usage or importance scores.\n   - The mechanism should permit high plasticity for underused directions and increased stability for directions deemed important for prior data, without explicit task labels.\n\n2. Self-normalization and bounded dynamics:\n   - Activations should keep mean \u2248 0 and variance \u2248 1 (or within provable bounds) across layers in expectation under realistic input distributions, minimizing need for batch/statistics layers.\n   - Prove or empirically demonstrate bounds on activation variance (no exploding/vanishing gradients).\n\n3. Non-saturating, high-expressivity behavior:\n   - Avoid regimes where neurons become permanently inactive (dead ReLU problem) or saturate (vanishing gradients). Prefer smooth transitions or graded weighting (e.g., value-weighted gating like GELU) that preserve gradient information for small and large inputs.\n\n4. Task-agnostic continuous integration:\n   - No explicit task ID required at training or test time.\n   - The activation can detect novelty or distributional mismatch and allocate representational capacity (e.g., by locally increasing plasticity or allocating a new subspace) while preserving previously consolidated subspaces.\n\n5. Compact, trainable parameterization:\n   - Parameter budget per neuron or per layer should be modest (comparable to scalar biases or light modulators), enabling scaling to deep, wide networks without large memory overhead.\n   - Optionally allow small global controller parameters to coordinate plasticity\u2013stability scheduling.\n\nEvaluation protocol and metrics\n- Continual learning streams:\n  - Standard benchmarks: permuted MNIST, Split CIFAR, sequential Omniglot/miniImageNet tasks, and longer synthetic domain streams that probe distributional shifts and incremental concept composition.\n  - Large-scale sequential multi-domain tasks (language + vision) where appropriate.\n- Forgetting and retention:\n  - Average accuracy across tasks after sequential exposure; forward/backward transfer metrics; forgetting index.\n- Plasticity metrics:\n  - Speed of adaptation to new tasks (few-shot loss decrease), representational change measures (RKHS/CCA between activations over time).\n- Stability and numerical properties:\n  - Layerwise mean/variance statistics over time; gradient norms; fraction of dead/inactive units.\n- Emergence of abstraction/deduction:\n  - Probe tasks for compositional generalization and simple deductive reasoning (synthetic rule induction, reasoning benchmarks), and measure representational reuse (similarity clustering of concept embeddings).\n- Ablations:\n  - Compare against baseline activations (ReLU, GELU, SELU), sup-sup/mask methods, and normalization schemes (batch/LayerNorm).\n\nConcrete design directions (non-exclusive)\n- History-aware activation: activation parameters updated via an exponential moving average of recent gradients/activations to gate plasticity locally.\n- Memory-augmented modulation: small, per-neuron associative memory (e.g., key-value attractors) that biases the activation toward known subspaces when input matches stored concepts.\n- Continuous soft-supermask: per-neuron continuous gating variable learned online (not discrete masks, no task ID) that sparsifies activations adaptively and can be regularized to encourage non-overlap between concept subspaces.\n- Probabilistic activation: treat activation output as sample from a small conditional distribution whose parameters adapt with Bayesian updates to balance prior (stability) and likelihood (plasticity).\n- Regularizers that encourage folded representations: contrastive or clustering losses that pull semantically related patterns together and penalize destructive overlap with existing concepts.\n\nConstraints and practical considerations\n- No reliance on storing per-task masks or task identities.\n- Compute and memory overhead must be small enough to integrate into large models (transformers, convnets).\n- Prefer mechanisms that allow theoretical analysis of stability (e.g., contraction maps, variance bounds) or at least strong empirical evidence across depths and long task streams.\n\nExpected contributions and outcomes\n- A new class of activation functions that internalize continual-learning biases and enable continual integration of knowledge with minimal overhead.\n- Theory or empirical guarantees on self-normalization and non-saturation.\n- Demonstrations that such activations reduce catastrophic forgetting, allow faster adaptation to new domains, and promote layer-wise reuse and abstraction emergence without external masking or task signals.\n\nDesired deliverables for a first study\n- Definition of a parametric activation design (functional form + update rule).\n- Proof sketch or empirical demonstration of self-normalization and bounded variance.\n- Continual-learning experiments comparing against baselines on standard streams and synthetic compositional tasks.\n- Ablation study showing plasticity\u2013stability trade-offs and visualization of representational folding and reuse.\nProblem Type: Open Question\nDifficulty: Exploratory\nDomain: Machine Learning / Reinforcement Learning\nOriginator: Ada Researcher\nCompute Budget: 1 APU Apple Silicon 128 GB (M3 Max mit 16\u2011Core CPU)\nTarget Deadline: 2026-03-08\nTags: continual learning, activation function, reasoning\nCategories: Machine Learning / Reinforcement Learning\nExpected Artifacts: Paper, Code, Model\nRelated Links: https://arxiv.org/abs/2006.14769, https://arxiv.org/abs/2602.05688, https://arxiv.org/abs/1606.08415, https://arxiv.org/abs/1802.01569\nDataset Links: https://github.com/awarelab/continual_world",
+    "tags": [
+      "continual learning",
+      "activation function",
+      "reasoning"
+    ],
+    "target_deadline": "2026-03-08"
+  },
+  "package": {
+    "artifacts": [
+      {
+        "kind": "other",
+        "path": "workspace/packages/cl-act/packaging_manifest.json",
+        "sha256": "027c3945277cd052b2b9387855fb54cb9a54eaf38146c0396d6c146cc581cb50",
+        "size_bytes": 1679,
+        "url": null
+      },
+      {
+        "kind": "other",
+        "path": "workspace/packages/cl-act/README.md",
+        "sha256": "1825ffe0d26e6abf5423cdda066b57d2d2efb7263e27efc9bb999131f79837d2",
+        "size_bytes": 2042,
+        "url": null
+      },
+      {
+        "kind": "other",
+        "path": "workspace/packages/cl-act/requirements.txt",
+        "sha256": "5fc248781dca4e4b0252f039aa3a32d7c253f14ffbac06429f5bf5ec0a88fd4b",
+        "size_bytes": 217,
+        "url": null
+      },
+      {
+        "kind": "other",
+        "path": "workspace/packages/cl-act/dependency_graph.json",
+        "sha256": "94869528c295be4e9494419494cf74cf5d7b3d6895ae1b80d5fcff3d7709c0b1",
+        "size_bytes": 2503,
+        "url": null
+      }
+    ],
+    "dependencies": [
+      {
+        "name": "numpy",
+        "required_by": [
+          "activation-cl-validation"
+        ],
+        "source": "runtime",
+        "spec": ">=1.26,<3",
+        "transitive": false
+      },
+      {
+        "name": "pandas",
+        "required_by": [
+          "activation-cl-validation"
+        ],
+        "source": "runtime",
+        "spec": ">=2.2,<3",
+        "transitive": false
+      },
+      {
+        "name": "matplotlib",
+        "required_by": [
+          "activation-cl-validation"
+        ],
+        "source": "runtime",
+        "spec": ">=3.8,<4",
+        "transitive": false
+      },
+      {
+        "name": "seaborn",
+        "required_by": [
+          "activation-cl-validation"
+        ],
+        "source": "runtime",
+        "spec": ">=0.13,<1",
+        "transitive": false
+      },
+      {
+        "name": "sympy",
+        "required_by": [
+          "activation-cl-validation"
+        ],
+        "source": "runtime",
+        "spec": ">=1.12,<2",
+        "transitive": false
+      },
+      {
+        "name": "pypdfium2",
+        "required_by": [
+          "activation-cl-validation"
+        ],
+        "source": "optional",
+        "spec": ">=4.30,<5",
+        "transitive": false
+      },
+      {
+        "name": "pytest",
+        "required_by": [
+          "tests"
+        ],
+        "source": "dev",
+        "spec": ">=8,<9",
+        "transitive": false
+      },
+      {
+        "name": "ruff",
+        "required_by": [
+          "lint"
+        ],
+        "source": "dev",
+        "spec": ">=0.5,<1",
+        "transitive": false
+      },
+      {
+        "name": "mypy",
+        "required_by": [
+          "typecheck"
+        ],
+        "source": "dev",
+        "spec": ">=1.10,<2",
+        "transitive": false
+      },
+      {
+        "name": "python-dateutil",
+        "required_by": [
+          "pandas",
+          "matplotlib"
+        ],
+        "source": "runtime",
+        "spec": ">=2.8.2",
+        "transitive": true
+      },
+      {
+        "name": "pytz",
+        "required_by": [
+          "pandas"
+        ],
+        "source": "runtime",
+        "spec": ">=2020.1",
+        "transitive": true
+      },
+      {
+        "name": "tzdata",
+        "required_by": [
+          "pandas"
+        ],
+        "source": "runtime",
+        "spec": ">=2022.7",
+        "transitive": true
+      },
+      {
+        "name": "contourpy",
+        "required_by": [
+          "matplotlib"
+        ],
+        "source": "runtime",
+        "spec": ">=1.0.1",
+        "transitive": true
+      },
+      {
+        "name": "cycler",
+        "required_by": [
+          "matplotlib"
+        ],
+        "source": "runtime",
+        "spec": ">=0.10",
+        "transitive": true
+      },
+      {
+        "name": "fonttools",
+        "required_by": [
+          "matplotlib"
+        ],
+        "source": "runtime",
+        "spec": ">=4.22.0",
+        "transitive": true
+      },
+      {
+        "name": "kiwisolver",
+        "required_by": [
+          "matplotlib"
+        ],
+        "source": "runtime",
+        "spec": ">=1.3.1",
+        "transitive": true
+      },
+      {
+        "name": "packaging",
+        "required_by": [
+          "matplotlib"
+        ],
+        "source": "runtime",
+        "spec": ">=20.0",
+        "transitive": true
+      },
+      {
+        "name": "pillow",
+        "required_by": [
+          "matplotlib"
+        ],
+        "source": "runtime",
+        "spec": ">=8",
+        "transitive": true
+      },
+      {
+        "name": "pyparsing",
+        "required_by": [
+          "matplotlib"
+        ],
+        "source": "runtime",
+        "spec": ">=3",
+        "transitive": true
+      }
+    ],
+    "dependency_graph_mermaid": "graph TD\n  A[activation-cl-validation] --> B[numpy]\n  A --> C[pandas]\n  A --> D[matplotlib]\n  A --> E[seaborn]\n  A --> F[sympy]\n  A --> G[pypdfium2]\n  C --> H[python-dateutil]\n  C --> I[pytz]\n  C --> J[tzdata]\n  D --> K[contourpy]\n  D --> L[cycler]\n  D --> M[fonttools]\n  D --> N[kiwisolver]\n  D --> O[packaging]\n  D --> P[pillow]\n  D --> Q[pyparsing]",
+    "dependency_graph_path": "workspace/packages/cl-act/dependency_graph.json",
+    "distribution_name": "activation-cl-validation",
+    "handle": "cl-act",
+    "handle_alternatives": [
+      "activation-cl-validation",
+      "continual-activation-cl"
+    ],
+    "import_name": "activation_cl_validation",
+    "install_command": "pip install activation-cl-validation",
+    "install_target": "activation-cl-validation",
+    "manager_install_command": "pip install omegaxiv",
+    "manifest_path": "workspace/packages/cl-act/packaging_manifest.json",
+    "package_type": "library",
+    "readme_path": "workspace/packages/cl-act/README.md",
+    "requirements_path": "workspace/packages/cl-act/requirements.txt",
+    "version": null
+  },
+  "paper_pdf_url": "https://raw.githubusercontent.com/omegaXiv-labs/omegaXiv-run-f1be1c20-5f6f-4b5c-85c2-3440e8b965c9/main/paper/main.pdf",
+  "paper_thumbnail_url": "https://raw.githubusercontent.com/omegaXiv-labs/omegaXiv-run-f1be1c20-5f6f-4b5c-85c2-3440e8b965c9/main/paper/thumbnail.png",
+  "pipeline_id": "bc36d98c-6b8e-435c-8783-221723ad93ff",
+  "problem_type": "Open Question",
+  "related_links": [
+    "https://arxiv.org/abs/2006.14769",
+    "https://arxiv.org/abs/2602.05688",
+    "https://arxiv.org/abs/1606.08415",
+    "https://arxiv.org/abs/1802.01569"
+  ],
+  "repo_url": "https://github.com/omegaXiv-labs/omegaXiv-run-f1be1c20-5f6f-4b5c-85c2-3440e8b965c9",
+  "request_text": "Title: Continual Learning Activation Function\nAbstract: We propose the problem of designing a dynamic, continuously-adaptive activation function that embeds continual-learning inductive biases directly into neuron nonlinearity. The target activation should trade off plasticity versus stability so networks can incrementally integrate concepts from multiple domains without catastrophic forgetting, while remaining scalable (avoiding saturation/dead neurons) and self-stabilizing (preserving bounded mean/variance across layers). Crucially, this mechanism must not rely on predefined task counts, explicit task identities, or brittle masking hacks; instead it should fold related concepts into shared representations and enable layer-wise progressive knowledge integration and reuse so that higher-level abstractions and deductive reasoning can emerge.\nFull Description: Problem statement\nDesign, implement, and evaluate an activation-function architecture A(x; \u03b8_t, s_t, state) that (1) dynamically adapts during continual training to integrate new concepts, (2) preserves previously learned concepts (minimizes catastrophic forgetting) without explicit task identifiers or task-specific masks, and (3) enforces stable signal statistics and scalable gradients so networks remain trainable at depth and do not develop dead neurons or exploding activations.\n\nMotivation and desiderata\n- Continual-learning bias inside activations: Existing continual-learning solutions (supermasks, gating, weight stabilization) are effective but often require task IDs, additional memory, or architectural hacks. Embedding a continual-learning inductive bias into the activation function could provide a lightweight, layer-local mechanism for balancing plasticity (to learn new concepts) and stability (to preserve old concepts).\n- Scalability: The activation must avoid hard saturation (prevent dead neurons) and preserve gradient flow across many layers and long training sequences. It should exhibit self-normalizing behavior (maintain means/variances within bounds) to reduce need for external normalization.\n- Dynamic, task-agnostic adaptation: The activation must adapt online to new data distributions without knowing the number of domains or task boundaries, and without relying on explicit masking or external retrieval mechanisms.\n- Representation reuse and progressive abstraction: The function should encourage folding of semantically similar inputs into nearby activations, enabling layer-wise progressive integration and reuse of substructures so abstract, compositional concepts and simple deductive reasoning can emerge from continual exposure.\n\nFunctional requirements\n1. Plasticity\u2013stability control:\n   - A local mechanism (e.g., learned gating, memory-augmented modulation, or history-dependent parameters) that modulates effective nonlinearity per neuron based on recent weight/activation usage or importance scores.\n   - The mechanism should permit high plasticity for underused directions and increased stability for directions deemed important for prior data, without explicit task labels.\n\n2. Self-normalization and bounded dynamics:\n   - Activations should keep mean \u2248 0 and variance \u2248 1 (or within provable bounds) across layers in expectation under realistic input distributions, minimizing need for batch/statistics layers.\n   - Prove or empirically demonstrate bounds on activation variance (no exploding/vanishing gradients).\n\n3. Non-saturating, high-expressivity behavior:\n   - Avoid regimes where neurons become permanently inactive (dead ReLU problem) or saturate (vanishing gradients). Prefer smooth transitions or graded weighting (e.g., value-weighted gating like GELU) that preserve gradient information for small and large inputs.\n\n4. Task-agnostic continuous integration:\n   - No explicit task ID required at training or test time.\n   - The activation can detect novelty or distributional mismatch and allocate representational capacity (e.g., by locally increasing plasticity or allocating a new subspace) while preserving previously consolidated subspaces.\n\n5. Compact, trainable parameterization:\n   - Parameter budget per neuron or per layer should be modest (comparable to scalar biases or light modulators), enabling scaling to deep, wide networks without large memory overhead.\n   - Optionally allow small global controller parameters to coordinate plasticity\u2013stability scheduling.\n\nEvaluation protocol and metrics\n- Continual learning streams:\n  - Standard benchmarks: permuted MNIST, Split CIFAR, sequential Omniglot/miniImageNet tasks, and longer synthetic domain streams that probe distributional shifts and incremental concept composition.\n  - Large-scale sequential multi-domain tasks (language + vision) where appropriate.\n- Forgetting and retention:\n  - Average accuracy across tasks after sequential exposure; forward/backward transfer metrics; forgetting index.\n- Plasticity metrics:\n  - Speed of adaptation to new tasks (few-shot loss decrease), representational change measures (RKHS/CCA between activations over time).\n- Stability and numerical properties:\n  - Layerwise mean/variance statistics over time; gradient norms; fraction of dead/inactive units.\n- Emergence of abstraction/deduction:\n  - Probe tasks for compositional generalization and simple deductive reasoning (synthetic rule induction, reasoning benchmarks), and measure representational reuse (similarity clustering of concept embeddings).\n- Ablations:\n  - Compare against baseline activations (ReLU, GELU, SELU), sup-sup/mask methods, and normalization schemes (batch/LayerNorm).\n\nConcrete design directions (non-exclusive)\n- History-aware activation: activation parameters updated via an exponential moving average of recent gradients/activations to gate plasticity locally.\n- Memory-augmented modulation: small, per-neuron associative memory (e.g., key-value attractors) that biases the activation toward known subspaces when input matches stored concepts.\n- Continuous soft-supermask: per-neuron continuous gating variable learned online (not discrete masks, no task ID) that sparsifies activations adaptively and can be regularized to encourage non-overlap between concept subspaces.\n- Probabilistic activation: treat activation output as sample from a small conditional distribution whose parameters adapt with Bayesian updates to balance prior (stability) and likelihood (plasticity).\n- Regularizers that encourage folded representations: contrastive or clustering losses that pull semantically related patterns together and penalize destructive overlap with existing concepts.\n\nConstraints and practical considerations\n- No reliance on storing per-task masks or task identities.\n- Compute and memory overhead must be small enough to integrate into large models (transformers, convnets).\n- Prefer mechanisms that allow theoretical analysis of stability (e.g., contraction maps, variance bounds) or at least strong empirical evidence across depths and long task streams.\n\nExpected contributions and outcomes\n- A new class of activation functions that internalize continual-learning biases and enable continual integration of knowledge with minimal overhead.\n- Theory or empirical guarantees on self-normalization and non-saturation.\n- Demonstrations that such activations reduce catastrophic forgetting, allow faster adaptation to new domains, and promote layer-wise reuse and abstraction emergence without external masking or task signals.\n\nDesired deliverables for a first study\n- Definition of a parametric activation design (functional form + update rule).\n- Proof sketch or empirical demonstration of self-normalization and bounded variance.\n- Continual-learning experiments comparing against baselines on standard streams and synthetic compositional tasks.\n- Ablation study showing plasticity\u2013stability trade-offs and visualization of representational folding and reuse.\nProblem Type: Open Question\nDifficulty: Exploratory\nDomain: Machine Learning / Reinforcement Learning\nOriginator: Ada Researcher\nCompute Budget: 1 APU Apple Silicon 128 GB (M3 Max mit 16\u2011Core CPU)\nTarget Deadline: 2026-03-08\nTags: continual learning, activation function, reasoning\nCategories: Machine Learning / Reinforcement Learning\nExpected Artifacts: Paper, Code, Model\nRelated Links: https://arxiv.org/abs/2006.14769, https://arxiv.org/abs/2602.05688, https://arxiv.org/abs/1606.08415, https://arxiv.org/abs/1802.01569\nDataset Links: https://github.com/awarelab/continual_world",
+  "run_id": "f1be1c20-5f6f-4b5c-85c2-3440e8b965c9",
+  "session_id": "bc36d98c-6b8e-435c-8783-221723ad93ff",
+  "tags": [
+    "continual learning",
+    "activation function",
+    "reasoning"
+  ],
+  "target_deadline": "2026-03-08",
+  "title": "Continual Learning Activation Function",
+  "updated_at": "2026-03-11T09:54:26.950048+00:00"
+}

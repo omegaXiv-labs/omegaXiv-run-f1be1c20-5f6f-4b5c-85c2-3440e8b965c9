@@ -12,3 +12,5 @@ Contents:
 - experiments/ (run artifacts, if available)
 - knowledge/ (research notes, if available)
 - MANIFEST.json and artifacts.json
+
+The current experiment package is a synthetic validation harness. Its outputs are generated from seeded simulation profiles and symbolic checks, not from direct benchmark training runs.

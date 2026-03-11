@@ -1,0 +1,87 @@
+{
+  "best_metrics": [
+    {
+      "activation": "gelu",
+      "benchmark": "hide_and_seek-default",
+      "index": 0,
+      "mean_reward_mean": -70.06807579214365,
+      "mean_reward_std": 0.19805722587597355,
+      "mean_success_mean": 0.1515,
+      "mean_success_std": 0.14919953083036153
+    },
+    {
+      "activation": "proposed",
+      "benchmark": "hide_and_seek-default",
+      "index": 1,
+      "mean_reward_mean": -67.2801613730917,
+      "mean_reward_std": 4.398264252384855,
+      "mean_success_mean": 0.15125,
+      "mean_success_std": 0.09015611460128481
+    },
+    {
+      "activation": "gelu",
+      "benchmark": "pitfall-default",
+      "index": 2,
+      "mean_reward_mean": 176.3060173034668,
+      "mean_reward_std": 27.3344722038784,
+      "mean_success_mean": 0.3029904891498272,
+      "mean_success_std": 0.08219844762212115
+    },
+    {
+      "activation": "proposed",
+      "benchmark": "pitfall-default",
+      "index": 3,
+      "mean_reward_mean": 137.086651763916,
+      "mean_reward_std": 28.130086449822365,
+      "mean_success_mean": 0.20711613240168641,
+      "mean_success_std": 0.053388367974896066
+    }
+  ],
+  "final_metrics": [
+    {
+      "activation": "gelu",
+      "benchmark": "hide_and_seek-default",
+      "index": 0,
+      "mean_reward_mean": -74.37742275254064,
+      "mean_reward_std": 5.896279690488743,
+      "mean_success_mean": 0.0685,
+      "mean_success_std": 0.031819805153394644
+    },
+    {
+      "activation": "proposed",
+      "benchmark": "hide_and_seek-default",
+      "index": 1,
+      "mean_reward_mean": -67.65572381479812,
+      "mean_reward_std": 4.929389750964031,
+      "mean_success_mean": 0.14075,
+      "mean_success_std": 0.07530687219636731
+    },
+    {
+      "activation": "gelu",
+      "benchmark": "pitfall-default",
+      "index": 2,
+      "mean_reward_mean": 101.67891723632809,
+      "mean_reward_std": 21.80985154041372,
+      "mean_success_mean": 0.1061528240145169,
+      "mean_success_std": 0.09410220702044614
+    },
+    {
+      "activation": "proposed",
+      "benchmark": "pitfall-default",
+      "index": 3,
+      "mean_reward_mean": 137.086651763916,
+      "mean_reward_std": 28.130086449822365,
+      "mean_success_mean": 0.20711613240168641,
+      "mean_success_std": 0.053388367974896066
+    }
+  ],
+  "plots": [
+    "experiments/coom_activation_validation/outputs/plots/mean_reward_learning_curves.png",
+    "experiments/coom_activation_validation/outputs/plots/mean_success_learning_curves.png"
+  ],
+  "video": "experiments/previews/pitfall-default_proposed_demo.mp4",
+  "videos": [
+    "experiments/previews/pitfall-default_proposed_demo.mp4",
+    "experiments/previews/hide_and_seek-default_proposed_demo.mp4"
+  ]
+}

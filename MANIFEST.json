@@ -1,5 +1,42 @@
 {
-  "artifacts": [],
+  "artifacts": [
+    {
+      "kind": "dataset",
+      "label": "COOM Benchmark Summary",
+      "mimeType": "application/json",
+      "path": "experiments/coom_activation_validation/outputs/summary.json"
+    },
+    {
+      "kind": "dataset",
+      "label": "COOM Evaluation Metrics",
+      "mimeType": "text/csv",
+      "path": "experiments/coom_activation_validation/outputs/all_eval_metrics.csv"
+    },
+    {
+      "kind": "image",
+      "label": "COOM Mean Reward Learning Curves",
+      "mimeType": "image/png",
+      "path": "experiments/coom_activation_validation/outputs/plots/mean_reward_learning_curves.png"
+    },
+    {
+      "kind": "image",
+      "label": "COOM Mean Success Learning Curves",
+      "mimeType": "image/png",
+      "path": "experiments/coom_activation_validation/outputs/plots/mean_success_learning_curves.png"
+    },
+    {
+      "kind": "video",
+      "label": "Pitfall Default Proposed Demo",
+      "mimeType": "video/mp4",
+      "path": "experiments/previews/pitfall-default_proposed_demo.mp4"
+    },
+    {
+      "kind": "video",
+      "label": "Hide And Seek Default Proposed Demo",
+      "mimeType": "video/mp4",
+      "path": "experiments/previews/hide_and_seek-default_proposed_demo.mp4"
+    }
+  ],
   "code": [
     "code/run_experiments.py",
     "code/__init__.py",
@@ -9,12 +46,12 @@
     "code/sympy_checks.py",
     "code/test_core.py"
   ],
-  "created_at": "2026-03-11T10:06:25.781489+00:00",
+  "created_at": "2026-03-08T17:29:26.205512+00:00",
   "paper": {
     "bibtex": "paper/references.bib",
     "latex": "paper/main.tex",
     "pdf": "paper/main.pdf",
-    "thumbnail": "paper/thumbnail.png"
+    "thumbnail": null
   },
   "phases": [
     "hypothesis_methodology",
@@ -24,6 +61,20 @@
     "validation_simulation",
     "writing_presentation"
   ],
+  "publication_preview": {
+    "asset": {
+      "path": "experiments/previews/hide_and_seek-default_proposed_demo.mp4",
+      "mimeType": "video/mp4"
+    },
+    "caption": "Recovered COOM rollout from the trained proposed-activation agent.",
+    "kind": "video",
+    "label": "Hide and Seek Default Proposed Demo",
+    "phase": "validation_simulation",
+    "poster": {
+      "path": "experiments/coom_activation_validation/outputs/plots/mean_success_learning_curves.png",
+      "mimeType": "image/png"
+    }
+  },
   "session_id": "bc36d98c-6b8e-435c-8783-221723ad93ff",
   "sources": "sources/sources.json",
   "workspace": {

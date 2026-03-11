@@ -264,7 +264,7 @@ The right-hand side is independent of $T$, so the floor is non-vanishing.
 We evaluate the formal chain in a hybrid but theory-prioritized protocol. Executed regimes cover bounded-drift stability, alternating-conflict lower-bound stress, and cross-hypothesis ablations. Two planned tracks (broad replay-free competitiveness and compositional probes) remain unexecuted and are treated as open evidence gaps.
 
 \subsection{Streams, Baselines, and Metrics}
-The executed stream set includes PermutedMNIST-20, SplitCIFAR100-10, Sequential Omniglot, and generated bounded-drift and alternating-conflict streams. Baselines include fixed activations (ReLU, GELU, SELU), stabilization/replay references (EWC, SI, A-GEM, DER++), and mask-based references (SupSup), together with ablated variants of the proposed method.
+The executed stream set uses a synthetic simulator with scenario labels anchored to PermutedMNIST-20, SplitCIFAR100-10, Sequential Omniglot, bounded-drift, and alternating-conflict regimes. In the current artifact these labels denote simulated drift/conflict profiles rather than direct benchmark training runs. Baselines include fixed activations (ReLU, GELU, SELU), stabilization/replay references (EWC, SI, A-GEM, DER++), and mask-based references (SupSup), together with ablated variants of the proposed method.
 
 Primary metrics are average sequential accuracy, forgetting index, bounded-variance compliance, dynamic-regret slope, dead-unit fraction, and efficiency overhead. Uncertainty is reported with seed-level 95\% confidence intervals. The executed run set uses 22 seeds and covers drift levels $\{0.01,0.03,0.05,0.10\}$ and conflict margins $\{0,0.05,0.1,0.2,0.3\}$.
 
@@ -285,36 +285,36 @@ The theorem-linked claim for bounded moments is tested by \figref{fig:validation
 \small
 \renewcommand{\arraystretch}{1.1}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.30\linewidth}p{0.33\linewidth}ccc}
+\begin{tabular}{p{0.24\linewidth}p{0.39\linewidth}ccc}
 \hline
-Check ID & Criterion & Value & Threshold & Pass \\
+Check name & Criterion & Value & Threshold & Pass \\
 \hline
-h1\_bounded\_compliance & Bounded drift compliance for proposed model & 0.9522 & $\ge 0.95$ & Yes \\
-h1\_stress\_violation\_direction & Stress drift reduces compliance vs bounded regime & $-0.0314$ & $< 0$ & Yes \\
-h1\_forgetting\_vs\_gelu & Relative forgetting improvement over GELU & 0.5240 & $\ge 0.10$ & Yes \\
-h4\_static\_positive\_slope & Static baselines have positive high-conflict regret slope & 0.4049 & $>0$ & Yes \\
-h4\_dynamic\_reduction & Slope reduction of dynamic vs best static baseline & 0.4271 & $\ge 0.30$ & Yes \\
-h4\_boundary\_weakening & Boundary case weakens slope vs high conflict & $-0.3058$ & $<0$ & Yes \\
+Moment stability in bounded drift & Proposed-model bounded-variance compliance remains inside the bounded-regime target. & 0.9522 & $\ge 0.95$ & Yes \\
+Stress-direction compliance drop & Stress drift reduces compliance relative to the bounded regime. & $-0.0314$ & $< 0$ & Yes \\
+Forgetting improvement over GELU & Relative forgetting improvement over GELU clears the bounded-regime acceptance bar. & 0.5240 & $\ge 0.10$ & Yes \\
+Positive static regret slope & Static baselines retain positive regret slope in high-conflict regimes. & 0.4049 & $>0$ & Yes \\
+Dynamic slope reduction & The stateful activation reduces slope versus the best static baseline. & 0.4271 & $\ge 0.30$ & Yes \\
+Boundary weakening under low conflict & Lower conflict weakens the static-boundary slope relative to the stress regime. & $-0.3058$ & $<0$ & Yes \\
 \hline
 \end{tabular}
 \end{table}
 
 \begin{table}[t]
-\caption{Claim-to-artifact traceability map for h1--h4, separating theorem status, symbolic validation, and executed empirical support.}
+\caption{Claim-to-artifact traceability map separating theorem status, symbolic validation, and executed empirical support.}
 \label{tab:claim_trace}
 \centering
 \small
 \renewcommand{\arraystretch}{1.1}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.14\linewidth}p{0.14\linewidth}p{0.12\linewidth}p{0.13\linewidth}p{0.43\linewidth}}
+\begin{tabular}{p{0.23\linewidth}p{0.14\linewidth}p{0.11\linewidth}p{0.14\linewidth}p{0.28\linewidth}}
 \hline
-Claim ID & Status & Symbolic check & Empirical support & Primary evidence artifacts \\
+Claim name & Status & Symbolic check & Empirical support & Primary evidence artifacts \\
 \hline
-h1 & Conditionally supported & Pass & Pass (synthetic) & Table~\ref{tab:theorem_checks}, \figref{fig:validation} A/B, \texttt{theorem\_assumption\_checks.csv}, \texttt{sympy\_validation\_report.json} \\
-h2a (replay-free competitiveness) & Open & n/a & Not executed & Missing h2 benchmark track; execution gap recorded in \texttt{results\_summary.json} \\
-h2b (efficiency bound) & Partially supported & n/a & Pass (executed subset) & Table~\ref{tab:aggregate_metrics} and \texttt{validation\_metrics\_summary.csv} \\
-h3 (compositional + reuse joint criterion) & Open & n/a & Not executed & Missing h3 compositional-probe track; execution gap recorded in \texttt{results\_summary.json} \\
-h4 & Conditionally supported & Pass & Pass (synthetic) & Table~\ref{tab:theorem_checks}, Table~\ref{tab:conflict}, \figref{fig:validation} C/D, \texttt{regret\_slope\_ci.csv} \\
+Bounded moment stability & Conditionally supported & Pass & Pass (synthetic) & Table~\ref{tab:theorem_checks}; \figref{fig:validation} A/B; symbolic validation appendix \\
+Replay-free competitiveness & Open & n/a & Not executed & Benchmark-comparator track remains unexecuted in the current iteration \\
+Efficiency envelope & Partially supported & n/a & Pass (executed subset) & Table~\ref{tab:aggregate_metrics}; summary metrics derived from the synthetic run set \\
+Compositional reuse criterion & Open & n/a & Not executed & Compositional-probe track remains unexecuted in the current iteration \\
+Static-activation impossibility boundary & Conditionally supported & Pass & Pass (synthetic) & Table~\ref{tab:theorem_checks}; Table~\ref{tab:conflict}; \figref{fig:validation} C/D \\
 \hline
 \end{tabular}
 \end{table}
@@ -461,11 +461,11 @@ Because the current run set is synthetic-heavy, absolute metric magnitudes shoul
 
 \section{Reproducibility and Implementation Details}
 \subsection{Compute, Seeds, and Sweeps}
-All executed runs target a single Apple Silicon M3 Max class budget and use 22 seeds:
+All executed synthetic sweeps use 22 seeds:
 \[
 \{2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,67,71,79,89,101\}.
 \]
-Key sweep axes include drift magnitude $\{0.01,0.03,0.05,0.10\}$, conflict margin $\{0,0.05,0.1,0.2,0.3\}$, and switch period $\{1,5,20,100\}$ depending on scenario. Uncertainty is reported with seed-level 95\% confidence intervals.
+Key sweep axes include drift magnitude $\{0.01,0.03,0.05,0.10\}$, conflict margin $\{0,0.05,0.1,0.2,0.3\}$, and switch period $\{1,5,20,100\}$ depending on scenario. Uncertainty is reported with seed-level 95\% confidence intervals. Because the current artifact is simulator-based, these sweeps should be read as controlled synthetic perturbations rather than hardware-bound benchmark training jobs.
 
 \subsection{Hyperparameters and Approximations}
 The executed configuration enforces compact overhead and bounded projection for fast parameters. Slow updates satisfy $\eta_s\ll\eta_f$. The analysis uses summary-table approximations for regret slope and forgetting floor, consistent with the acceptance contract. Symbolic validation checks only algebraic consistency of theorem templates; it does not replace empirical evidence.

@@ -19,6 +19,17 @@ class Scenario:
     stress_mode: bool
 
 
+EXPERIMENT_CASE_NAMES = {
+    "exp_h1_moment_stability_bounded_drift": "Bounded-Drift Moment Stability",
+    "exp_h4_static_impossibility_counterexample_stress": "Static-Activation Boundary Under Alternating Conflict",
+    "exp_cross_hypothesis_ablation_and_proof_empirical_bridge": "Cross-Hypothesis Ablation Bridge",
+}
+
+
+def paper_case_name(experiment_id: str) -> str:
+    return EXPERIMENT_CASE_NAMES.get(experiment_id, experiment_id.replace("_", " ").title())
+
+
 def _base_profile(method: str) -> Dict[str, float]:
     profiles: Dict[str, Dict[str, float]] = {
         "Proposed full model": {
@@ -333,28 +344,31 @@ def theorem_assumption_checks(df: pd.DataFrame) -> pd.DataFrame:
 
     checks.append(
         {
-            "check_id": "h1_bounded_compliance",
-            "description": "Bounded drift compliance >= 0.95 for proposed method",
+            "case_name": paper_case_name("exp_h1_moment_stability_bounded_drift"),
+            "check_name": "Moment stability in bounded drift",
+            "criterion": "Bounded-variance compliance for the proposed model remains at or above the bounded-regime target.",
             "value": float(prop["bounded_variance_compliance"].mean()),
-            "threshold": 0.95,
+            "threshold": ">= 0.95",
             "pass": bool(prop["bounded_variance_compliance"].mean() >= 0.95),
         }
     )
     checks.append(
         {
-            "check_id": "h1_stress_violation_direction",
-            "description": "Stress drift should reduce compliance vs bounded regime",
+            "case_name": paper_case_name("exp_h1_moment_stability_bounded_drift"),
+            "check_name": "Stress-direction compliance drop",
+            "criterion": "Stress drift reduces compliance relative to the bounded regime.",
             "value": float(prop_stress["bounded_variance_compliance"].mean() - prop["bounded_variance_compliance"].mean()),
-            "threshold": 0.0,
+            "threshold": "< 0",
             "pass": bool(prop_stress["bounded_variance_compliance"].mean() < prop["bounded_variance_compliance"].mean()),
         }
     )
     checks.append(
         {
-            "check_id": "h1_forgetting_vs_gelu",
-            "description": "Forgetting improvement over GELU >= 10%",
+            "case_name": paper_case_name("exp_h1_moment_stability_bounded_drift"),
+            "check_name": "Forgetting improvement over GELU",
+            "criterion": "Relative forgetting improvement over GELU is at least ten percent in the bounded regime.",
             "value": float(1.0 - (prop["forgetting_index"].mean() / max(gelu["forgetting_index"].mean(), 1e-9))),
-            "threshold": 0.10,
+            "threshold": ">= 0.10",
             "pass": bool((1.0 - (prop["forgetting_index"].mean() / max(gelu["forgetting_index"].mean(), 1e-9))) >= 0.10),
         }
     )
@@ -367,29 +381,32 @@ def theorem_assumption_checks(df: pd.DataFrame) -> pd.DataFrame:
 
     checks.append(
         {
-            "check_id": "h4_static_positive_slope",
-            "description": "Static baselines have positive regret slope under high conflict",
+            "case_name": paper_case_name("exp_h4_static_impossibility_counterexample_stress"),
+            "check_name": "Positive static regret slope",
+            "criterion": "Static baselines exhibit positive regret slope under high conflict.",
             "value": float(static["regret_slope"].mean()),
-            "threshold": 0.0,
+            "threshold": "> 0",
             "pass": bool(static["regret_slope"].mean() > 0.0),
         }
     )
     reduction = 1.0 - (dynamic["regret_slope"].mean() / max(static.groupby("method")["regret_slope"].mean().min(), 1e-9))
     checks.append(
         {
-            "check_id": "h4_dynamic_reduction",
-            "description": "Dynamic model slope reduction >= 30% vs best static",
+            "case_name": paper_case_name("exp_h4_static_impossibility_counterexample_stress"),
+            "check_name": "Dynamic slope reduction",
+            "criterion": "The stateful activation lowers regret slope by at least thirty percent versus the best static baseline.",
             "value": float(reduction),
-            "threshold": 0.30,
+            "threshold": ">= 0.30",
             "pass": bool(reduction >= 0.30),
         }
     )
     checks.append(
         {
-            "check_id": "h4_boundary_weakening",
-            "description": "Boundary case weakens slope vs high conflict",
+            "case_name": paper_case_name("exp_h4_static_impossibility_counterexample_stress"),
+            "check_name": "Boundary weakening under low conflict",
+            "criterion": "Reducing conflict weakens the static-boundary slope relative to the high-conflict regime.",
             "value": float(low_conf[low_conf["method"] == "Static GELU"]["regret_slope"].mean() - static[static["method"] == "Static GELU"]["regret_slope"].mean()),
-            "threshold": 0.0,
+            "threshold": "< 0",
             "pass": bool(low_conf[low_conf["method"] == "Static GELU"]["regret_slope"].mean() < static[static["method"] == "Static GELU"]["regret_slope"].mean()),
         }
     )

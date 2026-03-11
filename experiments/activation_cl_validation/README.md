@@ -5,6 +5,8 @@ This experiment package runs a reproducible synthetic validation of the theory-f
 - `h4` static-activation impossibility boundary checks
 - Cross-hypothesis ablation bridge
 
+All quantitative outputs in this package come from a synthetic simulator with seeded noise and symbolic checks. They are not produced by training models on the named benchmarks directly.
+
 ## Layout
 - `src/activation_cl_validation/core.py`: synthetic stream generation and metric simulation
 - `src/activation_cl_validation/analysis.py`: CI tables and acceptance snapshots
@@ -15,7 +17,11 @@ This experiment package runs a reproducible synthetic validation of the theory-f
 - `tests/test_core.py`: minimal reproducibility and invariant tests
 
 ## Setup
-Create and install dependencies in a virtual environment under `experiments/.venv`.
+Create a virtual environment under `experiments/.venv`, then install the package and its declared dependencies:
+
+```bash
+python -m pip install -e experiments/activation_cl_validation
+```
 
 ## Run
 From workspace root:

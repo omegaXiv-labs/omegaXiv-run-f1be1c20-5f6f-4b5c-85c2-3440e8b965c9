@@ -14,5 +14,5 @@ def test_assumption_checks_have_expected_keys() -> None:
     scenarios = generate_scenarios()
     df = simulate_runs(methods=["Proposed full model", "GELU", "Static GELU", "SELU", "ReLU"], seeds=[7, 13], scenarios=scenarios)
     checks = theorem_assumption_checks(df)
-    assert {"check_id", "pass", "value"}.issubset(checks.columns)
+    assert {"case_name", "check_name", "criterion", "pass", "value"}.issubset(checks.columns)
     assert len(checks) >= 4

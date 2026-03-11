@@ -1,0 +1,7 @@
+.venv/
+external/
+artifacts/
+_vizdoom.ini
+artifacts/coom_activation_validation/
+experiments/coom_activation_validation/runs/
+experiments/coom_activation_validation/tmp/
