@@ -1,42 +1,5 @@
 {
-  "artifacts": [
-    {
-      "kind": "dataset",
-      "label": "COOM Benchmark Summary",
-      "mimeType": "application/json",
-      "path": "experiments/coom_activation_validation/outputs/summary.json"
-    },
-    {
-      "kind": "dataset",
-      "label": "COOM Evaluation Metrics",
-      "mimeType": "text/csv",
-      "path": "experiments/coom_activation_validation/outputs/all_eval_metrics.csv"
-    },
-    {
-      "kind": "image",
-      "label": "COOM Mean Reward Learning Curves",
-      "mimeType": "image/png",
-      "path": "experiments/coom_activation_validation/outputs/plots/mean_reward_learning_curves.png"
-    },
-    {
-      "kind": "image",
-      "label": "COOM Mean Success Learning Curves",
-      "mimeType": "image/png",
-      "path": "experiments/coom_activation_validation/outputs/plots/mean_success_learning_curves.png"
-    },
-    {
-      "kind": "video",
-      "label": "Pitfall Default Proposed Demo",
-      "mimeType": "video/mp4",
-      "path": "experiments/previews/pitfall-default_proposed_demo.mp4"
-    },
-    {
-      "kind": "video",
-      "label": "Hide And Seek Default Proposed Demo",
-      "mimeType": "video/mp4",
-      "path": "experiments/previews/hide_and_seek-default_proposed_demo.mp4"
-    }
-  ],
+  "artifacts": [],
   "code": [
     "code/run_experiments.py",
     "code/__init__.py",
@@ -53,20 +16,6 @@
   "paper_figures": "paper/figures",
   "paper_pdf": "paper/main.pdf",
   "paper_tables": "paper/tables",
-  "paper_thumbnail": null,
-  "publication_preview": {
-    "asset": {
-      "mimeType": "video/mp4",
-      "path": "experiments/previews/hide_and_seek-default_proposed_demo.mp4"
-    },
-    "caption": "Recovered COOM rollout from the trained proposed-activation agent.",
-    "kind": "video",
-    "label": "Hide and Seek Default Proposed Demo",
-    "phase": "validation_simulation",
-    "poster": {
-      "mimeType": "image/png",
-      "path": "experiments/coom_activation_validation/outputs/plots/mean_success_learning_curves.png"
-    }
-  },
+  "paper_thumbnail": "paper/thumbnail.png",
   "sources": "sources/sources.json"
 }
