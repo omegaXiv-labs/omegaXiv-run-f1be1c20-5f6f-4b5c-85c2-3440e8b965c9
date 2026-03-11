@@ -1,0 +1,25 @@
+{
+  "spec_path": "phase_outputs/SYMPY.md",
+  "checks": [
+    {
+      "check_id": "h1_fixed_point_limit_under_contraction",
+      "expression": "-(-v0*(exp(k) - 1)*exp(k*t) - (Delta*c1 + c2*eta_f**2)*(exp(k*t) - 1)*exp(k*(t + 1)))*exp(-2*k*t)/(exp(k) - 1)",
+      "steady_state_limit": "(Delta*c1 + c2*eta_f**2)*exp(k)/(exp(k) - 1)",
+      "expected_form": "(Delta*c1 + c2*eta_f**2)*exp(k)/(exp(k) - 1)",
+      "pass": true
+    },
+    {
+      "check_id": "h4_regret_to_forgetting_implication",
+      "expression": "R_dyn >= c*T*gamma and F >= R_dyn/T implies F >= c*gamma",
+      "simplified_rhs": "c*gamma",
+      "expected_form": "c*gamma",
+      "pass": true
+    }
+  ],
+  "all_passed": true,
+  "assumptions": [
+    "k > 0",
+    "rho = exp(-k)",
+    "equivalently 0 < rho < 1"
+  ]
+}

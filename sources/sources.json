@@ -1,0 +1,1262 @@
+[
+  {
+    "assumptions": [
+      "Diagonal Fisher approximation is sufficient.",
+      "Previous-task optima are encoded in \u03b8* and F."
+    ],
+    "authors": [
+      "James Kirkpatrick",
+      "Razvan Pascanu",
+      "Neil Rabinowitz",
+      "et al."
+    ],
+    "citation": "s1",
+    "claims": [
+      "Penalizing changes to important parameters mitigates catastrophic forgetting."
+    ],
+    "conclusions": [
+      "EWC improves retention versus naive fine-tuning in several sequential settings."
+    ],
+    "contributions": [
+      "EWC regularizer based on Fisher information.",
+      "Sequential training results on Atari and supervised tasks."
+    ],
+    "future_work": [
+      "Better posterior approximations.",
+      "Task-free variants without explicit task boundaries."
+    ],
+    "key_equations": [
+      "L(\u03b8)=L_t(\u03b8)+\\frac{\u03bb}{2}\\sum_i F_i(\u03b8_i-\u03b8_i^*)^2"
+    ],
+    "limitations": [
+      "Requires storing per-parameter importance.",
+      "Diagonal approximation can miss parameter interactions."
+    ],
+    "source_type": "paper",
+    "summary": "Introduces Elastic Weight Consolidation (EWC), which constrains updates on parameters with high Fisher importance to reduce forgetting in sequential learning. It matters because it formalizes the stability-plasticity trade-off as a parameter-space regularization objective.",
+    "title": "Overcoming catastrophic forgetting in neural networks",
+    "url": "https://arxiv.org/abs/1612.00796",
+    "year": 2016
+  },
+  {
+    "assumptions": [
+      "Local gradient-path statistics reflect parameter importance.",
+      "Task transitions can be detected to consolidate importance."
+    ],
+    "authors": [
+      "Friedemann Zenke",
+      "Ben Poole",
+      "Surya Ganguli"
+    ],
+    "citation": "s2",
+    "claims": [
+      "SI attains forgetting reduction with lower compute than EWC-like estimates."
+    ],
+    "conclusions": [
+      "Path-integral importance is a practical CL regularizer."
+    ],
+    "contributions": [
+      "Online importance accumulation.",
+      "Competitive retention on benchmark streams."
+    ],
+    "future_work": [
+      "Boundary-free continual consolidation."
+    ],
+    "key_equations": [
+      "\\Omega_i^\\mu=\\sum_t \\frac{\\Delta \u03b8_i(t)\\,g_i(t)}{(\\Delta \u03b8_i^\\mu)^2+\u03be}",
+      "L=L_t+c\\sum_i \\Omega_i(\u03b8_i-\\tilde{\u03b8}_i)^2"
+    ],
+    "limitations": [
+      "Still depends on consolidation points.",
+      "May underperform with heavy distribution drift."
+    ],
+    "source_type": "paper",
+    "summary": "Proposes Synaptic Intelligence (SI), an online path-integral measure of parameter importance that regularizes future updates. It matters for low-overhead continual regularization without needing second-order matrices.",
+    "title": "Continual Learning Through Synaptic Intelligence",
+    "url": "https://arxiv.org/abs/1703.04200",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Stored episodic samples represent prior tasks sufficiently.",
+      "Task identity exists during training for memory partitioning."
+    ],
+    "authors": [
+      "David Lopez-Paz",
+      "Marc'Aurelio Ranzato"
+    ],
+    "citation": "s3",
+    "claims": [
+      "Projected gradients reduce forgetting while permitting transfer."
+    ],
+    "conclusions": [
+      "Memory-constrained optimization is effective but costly."
+    ],
+    "contributions": [
+      "Inequality-constrained continual optimization.",
+      "Forgetting/transfer metrics formalization."
+    ],
+    "future_work": [
+      "Cheaper approximations and task-agnostic memory."
+    ],
+    "key_equations": [
+      "\\min_{\\tilde g} \\frac{1}{2}||g-\\tilde g||_2^2\\;\\text{s.t.}\\;\\langle \\tilde g,g_k\\rangle \\ge 0,\\forall k<t"
+    ],
+    "limitations": [
+      "QP projection overhead.",
+      "Relies on episodic memory and often task structure."
+    ],
+    "source_type": "paper",
+    "summary": "Introduces GEM, projecting gradients to avoid increasing loss on episodic memories from past tasks. It matters as a direct constraint-based method balancing adaptation and retention.",
+    "title": "Gradient Episodic Memory for Continual Learning",
+    "url": "https://arxiv.org/abs/1706.08840",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Single reference gradient is a good proxy for past-task constraints."
+    ],
+    "authors": [
+      "Arslan Chaudhry",
+      "Marc'Aurelio Ranzato",
+      "Marcus Rohrbach",
+      "Mohammad Elhoseiny"
+    ],
+    "citation": "s4",
+    "claims": [
+      "Comparable forgetting control with improved efficiency."
+    ],
+    "conclusions": [
+      "Approximate projection improves practicality of replay constraints."
+    ],
+    "contributions": [
+      "Low-cost gradient projection.",
+      "Benchmarks showing runtime gains over GEM."
+    ],
+    "future_work": [
+      "Adaptive reference sampling and task-free memory."
+    ],
+    "key_equations": [
+      "\\tilde g = g - \\frac{g^\\top g_{ref}}{g_{ref}^\\top g_{ref}}g_{ref}\\;\\text{if}\\;g^\\top g_{ref}<0"
+    ],
+    "limitations": [
+      "Proxy constraint can miss per-task violations."
+    ],
+    "source_type": "paper",
+    "summary": "A-GEM replaces GEM\u2019s per-task constraints with a single reference gradient from memory for cheaper projection. It matters because it scales constrained replay to larger models.",
+    "title": "Efficient Lifelong Learning with A-GEM",
+    "url": "https://arxiv.org/abs/1812.00420",
+    "year": 2018
+  },
+  {
+    "assumptions": [
+      "Teacher outputs from previous model approximate old-task function."
+    ],
+    "authors": [
+      "Zhizhong Li",
+      "Derek Hoiem"
+    ],
+    "citation": "s5",
+    "claims": [
+      "Old-task performance can be retained without old data storage."
+    ],
+    "conclusions": [
+      "Distillation mitigates forgetting in incremental settings."
+    ],
+    "contributions": [
+      "Data-free retention via output distillation."
+    ],
+    "future_work": [
+      "Combine with replay and representation constraints."
+    ],
+    "key_equations": [
+      "L = L_{new} + \u03bb\\,T^2\\,KL(\\sigma(z_{old}/T)\\,||\\,\\sigma(z/T))"
+    ],
+    "limitations": [
+      "Can drift when old logits are poorly calibrated."
+    ],
+    "source_type": "paper",
+    "summary": "Uses distillation on old outputs while learning new tasks to preserve prior behavior without old data. It matters as a foundational regularization baseline for CL.",
+    "title": "Learning without Forgetting",
+    "url": "https://arxiv.org/abs/1606.09282",
+    "year": 2016
+  },
+  {
+    "assumptions": [
+      "Small exemplar sets approximate old class distributions."
+    ],
+    "authors": [
+      "Sylvestre-Alvise Rebuffi",
+      "Alexander Kolesnikov",
+      "Georg Sperl",
+      "Christoph H. Lampert"
+    ],
+    "citation": "s6",
+    "claims": [
+      "Exemplar rehearsal plus distillation improves incremental accuracy."
+    ],
+    "conclusions": [
+      "Replay is powerful in class-incremental settings."
+    ],
+    "contributions": [
+      "Class-incremental recipe with bounded memory."
+    ],
+    "future_work": [
+      "Task-free sampling and stronger representation invariance."
+    ],
+    "key_equations": [
+      "p(y|x) \\propto -||\\phi(x)-\\mu_y||_2",
+      "L=L_{cls}+\u03bbL_{distill}"
+    ],
+    "limitations": [
+      "Memory selection bias and storage overhead."
+    ],
+    "source_type": "paper",
+    "summary": "Combines rehearsal exemplars, representation learning, and nearest-mean classification for class-incremental learning. It matters as a canonical replay baseline in CL vision.",
+    "title": "iCaRL: Incremental Classifier and Representation Learning",
+    "url": "https://arxiv.org/abs/1611.07725",
+    "year": 2016
+  },
+  {
+    "assumptions": [
+      "Task sequence allows column growth.",
+      "Memory growth is acceptable."
+    ],
+    "authors": [
+      "Andrei A. Rusu",
+      "Neil C. Rabinowitz",
+      "Guillaume Desjardins",
+      "et al."
+    ],
+    "citation": "s7",
+    "claims": [
+      "Frozen prior columns prevent forgetting."
+    ],
+    "conclusions": [
+      "Strong retention at high parameter cost."
+    ],
+    "contributions": [
+      "Architectural continual transfer without forgetting."
+    ],
+    "future_work": [
+      "Parameter-efficient adapters and shared activations."
+    ],
+    "key_equations": [
+      "h_i^{(k)} = f(W_i^{(k)}h_{i-1}^{(k)} + \\sum_{j<k} U_i^{(k:j)}h_{i-1}^{(j)})"
+    ],
+    "limitations": [
+      "Linear growth in model size.",
+      "Requires task boundaries."
+    ],
+    "source_type": "paper",
+    "summary": "Adds new network columns for new tasks with lateral reuse from frozen previous columns. It matters for strong retention via architectural isolation.",
+    "title": "Progressive Neural Networks",
+    "url": "https://arxiv.org/abs/1606.04671",
+    "year": 2016
+  },
+  {
+    "assumptions": [
+      "Task boundaries are known.",
+      "Per-task masks can be stored."
+    ],
+    "authors": [
+      "Arun Mallya",
+      "Svetlana Lazebnik"
+    ],
+    "citation": "s8",
+    "claims": [
+      "Multiple tasks can be packed with minimal interference."
+    ],
+    "conclusions": [
+      "Sparse subnetworks retain old tasks effectively."
+    ],
+    "contributions": [
+      "Iterative prune-and-retrain continual packing."
+    ],
+    "future_work": [
+      "Continuous, task-free mask dynamics."
+    ],
+    "key_equations": [
+      "m_t\\odot W \text{ (task-specific masked parameters)}"
+    ],
+    "limitations": [
+      "Task-ID/mask dependence conflicts with task-agnostic goals."
+    ],
+    "source_type": "paper",
+    "summary": "Uses iterative pruning/freezing to allocate subnetworks per task within one backbone. It matters as a strong sparse-allocation CL strategy.",
+    "title": "PackNet: Adding Multiple Tasks to a Single Network by Iterative Pruning",
+    "url": "https://arxiv.org/abs/1711.05769",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Task identity available at train/test.",
+      "Task embeddings can be maintained."
+    ],
+    "authors": [
+      "Joan Serra",
+      "Didac Suris",
+      "Marius Miron",
+      "Alexandros Karatzoglou"
+    ],
+    "citation": "s9",
+    "claims": [
+      "Task-specific gating protects old knowledge."
+    ],
+    "conclusions": [
+      "Effective retention with explicit task signals."
+    ],
+    "contributions": [
+      "Hard-attention gating for CL."
+    ],
+    "future_work": [
+      "Boundary-free gating signals from data dynamics."
+    ],
+    "key_equations": [
+      "a_l^t = \\sigma(s e_l^t)",
+      "h_l = a_l^t \\odot f(W_l h_{l-1})"
+    ],
+    "limitations": [
+      "Not task-agnostic.",
+      "Gate saturation sensitivity."
+    ],
+    "source_type": "paper",
+    "summary": "HAT learns task-conditioned gates to isolate task-relevant parameters. It matters as a masking baseline showing strong retention but explicit task dependence.",
+    "title": "Overcoming catastrophic forgetting with hard attention to the task",
+    "url": "https://arxiv.org/abs/1801.01423",
+    "year": 2018
+  },
+  {
+    "assumptions": [
+      "Context signals available for gating.",
+      "Importance estimates remain meaningful over tasks."
+    ],
+    "authors": [
+      "Arslan Chaudhry",
+      "Puneet K. Dokania",
+      "Thalaiyasingam Ajanthan",
+      "Philip H. S. Torr"
+    ],
+    "citation": "s10",
+    "claims": [
+      "Hybrid strategy outperforms either component alone in many settings."
+    ],
+    "conclusions": [
+      "Sparse contextual activation can reduce interference."
+    ],
+    "contributions": [
+      "Joint gating + stabilization CL method."
+    ],
+    "future_work": [
+      "Self-generated context from activation statistics."
+    ],
+    "key_equations": [
+      "L=L_t + c\\sum_i \\Omega_i(\u03b8_i-\\tilde \u03b8_i)^2"
+    ],
+    "limitations": [
+      "Requires context mechanism; not fully task-free."
+    ],
+    "source_type": "paper",
+    "summary": "Combines context-dependent sparse gating with synaptic stabilization (e.g., SI/EWC style) to reduce interference. It matters as a hybrid approach balancing isolation and sharing.",
+    "title": "Alleviating catastrophic forgetting using context-dependent gating and synaptic stabilization",
+    "url": "https://arxiv.org/abs/1802.01569",
+    "year": 2018
+  },
+  {
+    "assumptions": [
+      "Task-specific masks are stored and selected."
+    ],
+    "authors": [
+      "Arun Mallya",
+      "Dillon Davis",
+      "Svetlana Lazebnik"
+    ],
+    "citation": "s11",
+    "claims": [
+      "Competitive transfer with tiny per-task overhead."
+    ],
+    "conclusions": [
+      "Masking can avoid interference when task IDs are available."
+    ],
+    "contributions": [
+      "Mask-over-backbone transfer mechanism."
+    ],
+    "future_work": [
+      "Continuous mask dynamics without explicit task identifiers."
+    ],
+    "key_equations": [
+      "W_t = M_t \\odot W_{fixed}"
+    ],
+    "limitations": [
+      "Depends on mask storage/task routing."
+    ],
+    "source_type": "paper",
+    "summary": "Learns binary masks over fixed backbone weights to add tasks without changing shared parameters. It matters as low-overhead task-specialization baseline.",
+    "title": "Piggyback: Adapting a Single Network to Multiple Tasks by Learning to Mask Weights",
+    "url": "https://arxiv.org/abs/1801.06519",
+    "year": 2018
+  },
+  {
+    "assumptions": [
+      "Meta-objective captures long-horizon retention/adaptation trade-offs."
+    ],
+    "authors": [
+      "Rahaf Aljundi",
+      "Min Lin",
+      "Baptiste Goujaud",
+      "Yoshua Bengio"
+    ],
+    "citation": "s12",
+    "claims": [
+      "Can operate without explicit task IDs."
+    ],
+    "conclusions": [
+      "Meta-learned update rules improve task-free adaptation."
+    ],
+    "contributions": [
+      "Task-free meta-continual strategy."
+    ],
+    "future_work": [
+      "Scalable meta-objectives for deep continual models."
+    ],
+    "key_equations": [
+      "\\theta_{t+1}=\\theta_t-\\alpha \\nabla_\\theta L_t(\\theta_t,\\phi)",
+      "\\phi\\leftarrow\\phi-\\beta \\nabla_\\phi L_{meta}"
+    ],
+    "limitations": [
+      "Meta-training complexity and sensitivity."
+    ],
+    "source_type": "paper",
+    "summary": "Targets continual learning without task boundaries by meta-learning update behavior from online signals. It matters because task-agnosticity aligns with the requested constraints.",
+    "title": "Task Agnostic Continual Learning via Meta Learning",
+    "url": "https://arxiv.org/abs/1906.05201",
+    "year": 2019
+  },
+  {
+    "assumptions": [
+      "Interference score approximates future forgetting risk."
+    ],
+    "authors": [
+      "Rahaf Aljundi",
+      "Lucas Caccia",
+      "Eugene Belilovsky",
+      "et al."
+    ],
+    "citation": "s13",
+    "claims": [
+      "Better online CL than random replay under equal memory."
+    ],
+    "conclusions": [
+      "Prioritizing interfering samples strengthens retention."
+    ],
+    "contributions": [
+      "Interference-aware sample selection for replay."
+    ],
+    "future_work": [
+      "Approximate retrieval for larger memory banks."
+    ],
+    "key_equations": [
+      "x^*=\\arg\\max_{x\\in M} [\\ell(f_{\\theta-\\eta g}(x)) - \\ell(f_\\theta(x))]"
+    ],
+    "limitations": [
+      "Extra scoring overhead per step."
+    ],
+    "source_type": "paper",
+    "summary": "MIR selects replay samples most likely to interfere with current updates, improving memory efficiency. It matters for online CL where storage and compute are constrained.",
+    "title": "Online Continual Learning with Maximally Interfered Retrieval",
+    "url": "https://arxiv.org/abs/1908.04742",
+    "year": 2019
+  },
+  {
+    "assumptions": [
+      "Stored logits preserve informative targets over time."
+    ],
+    "authors": [
+      "Pietro Buzzega",
+      "Matteo Boschini",
+      "Angelo Porrello",
+      "Davide Abati",
+      "Simone Calderara"
+    ],
+    "citation": "s14",
+    "claims": [
+      "DER++ is hard to beat across common CL benchmarks."
+    ],
+    "conclusions": [
+      "Strong baselines are critical for fair CL evaluation."
+    ],
+    "contributions": [
+      "Simple yet strong replay baseline.",
+      "General CL protocol analysis."
+    ],
+    "future_work": [
+      "Task-free memory compression and adaptive replay."
+    ],
+    "key_equations": [
+      "L= L_{ce}(x,y)+\u03b1||z-z^{mem}||_2^2 + \u03b2L_{ce}(x^{mem},y^{mem})"
+    ],
+    "limitations": [
+      "Replay memory footprint and privacy constraints."
+    ],
+    "source_type": "paper",
+    "summary": "Introduces DER/DER++ using logit replay (dark knowledge) plus supervised replay, yielding strong simple baselines. It matters because many newer CL methods compare against DER++.",
+    "title": "Dark Experience for General Continual Learning: a Strong, Simple Baseline",
+    "url": "https://arxiv.org/abs/2004.07211",
+    "year": 2020
+  },
+  {
+    "assumptions": [
+      "Task-specific mask selection available.",
+      "Shared random weights can support many masked subnetworks."
+    ],
+    "authors": [
+      "Sid Black",
+      "Ari Shtull-Trauring",
+      "et al."
+    ],
+    "citation": "s15",
+    "claims": [
+      "Many tasks can coexist with minimal interference via masks."
+    ],
+    "conclusions": [
+      "Masking provides strong retention but uses task routing."
+    ],
+    "contributions": [
+      "Superposition masking framework.",
+      "Capacity scaling analysis."
+    ],
+    "future_work": [
+      "Continuous and task-free masking/activation control."
+    ],
+    "key_equations": [
+      "W_t = M_t \\odot W",
+      "M_t = \\mathbb{1}[S_t > \\tau]"
+    ],
+    "limitations": [
+      "Explicit masks/task IDs conflict with task-agnostic requirement."
+    ],
+    "source_type": "paper",
+    "summary": "Represents multiple tasks in a single weight tensor via task-specific binary supermasks. It matters as a high-capacity masking baseline and a direct comparator to mask-free activation adaptation.",
+    "title": "Supermasks in Superposition",
+    "url": "https://arxiv.org/abs/2006.14769",
+    "year": 2020
+  },
+  {
+    "assumptions": [
+      "Standardized APIs improve experimental comparability."
+    ],
+    "authors": [
+      "Vincenzo Lomonaco",
+      "Lorenzo Pellegrini",
+      "Andrea Cossu",
+      "et al."
+    ],
+    "citation": "s16",
+    "claims": [
+      "Reduces engineering friction and evaluation inconsistency."
+    ],
+    "conclusions": [
+      "Framework support accelerates CL research cycles."
+    ],
+    "contributions": [
+      "Unified open-source CL framework."
+    ],
+    "future_work": [
+      "Broader task-free/online RL continual scenarios."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Coverage depends on implemented plugins/scenarios."
+    ],
+    "source_type": "paper",
+    "summary": "Presents a unified toolkit for CL scenarios, strategies, metrics, and benchmarks. It matters for reproducible evaluation and fast ablation of activation-function proposals.",
+    "title": "Avalanche: an End-to-End Library for Continual Learning",
+    "url": "https://arxiv.org/abs/2104.00405",
+    "year": 2021
+  },
+  {
+    "assumptions": [
+      "Evaluation protocol materially changes method ranking."
+    ],
+    "authors": [
+      "Ibrahim Khalil Adam",
+      "et al."
+    ],
+    "citation": "s17",
+    "claims": [
+      "Static evaluation snapshots can overestimate robustness."
+    ],
+    "conclusions": [
+      "Temporal diagnostics are necessary in lifelong settings."
+    ],
+    "contributions": [
+      "Stability-gap framing and continual evaluation recommendations."
+    ],
+    "future_work": [
+      "Standardized continual-evaluation leaderboards."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Protocol adoption is not yet universal."
+    ],
+    "source_type": "paper",
+    "summary": "Argues conventional evaluation can hide instability and proposes continual evaluation diagnostics. It matters for assessing online adaptive activations beyond final accuracy.",
+    "title": "Continual evaluation for lifelong learning: Identifying the stability gap",
+    "url": "https://arxiv.org/abs/2205.13452",
+    "year": 2022
+  },
+  {
+    "assumptions": [
+      "Existing CL taxonomy can organize fast-evolving methods."
+    ],
+    "authors": [
+      "Liyuan Wang",
+      "Xianglong Liu",
+      "et al."
+    ],
+    "citation": "s18",
+    "claims": [
+      "No single method dominates across all settings."
+    ],
+    "conclusions": [
+      "Task-free and scalable CL remain open challenges."
+    ],
+    "contributions": [
+      "Broad taxonomy and benchmark synthesis."
+    ],
+    "future_work": [
+      "Unified protocols and realistic continual streams."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Survey lag versus rapidly appearing methods."
+    ],
+    "source_type": "paper",
+    "summary": "Large-scale survey covering CL settings, methods, theory, and applications. It matters for positioning activation-centric CL among replay, regularization, and architecture families.",
+    "title": "A Comprehensive Survey of Continual Learning: Theory, Method and Application",
+    "url": "https://arxiv.org/abs/2302.00487",
+    "year": 2023
+  },
+  {
+    "assumptions": [
+      "Sequence distributions follow defined shift model.",
+      "Hypothesis class supports derived generalization bounds."
+    ],
+    "authors": [
+      "Yunwen Lei",
+      "Yingbin Liang"
+    ],
+    "citation": "s19",
+    "claims": [
+      "Certain replay/regularization schemes have provable advantages under shift assumptions."
+    ],
+    "conclusions": [
+      "Theoretical tools can guide practical CL design."
+    ],
+    "contributions": [
+      "Formal CL learnability definitions and bounds."
+    ],
+    "future_work": [
+      "Bridge bounds with large-scale empirical deep CL."
+    ],
+    "key_equations": [
+      "\\mathcal{R}_{CL}(f)=\\sum_t w_t\\,\\mathbb{E}_{(x,y)\\sim D_t}[\\ell(f_t(x),y)]"
+    ],
+    "limitations": [
+      "Theory relies on simplified assumptions relative to deep practice."
+    ],
+    "source_type": "paper",
+    "summary": "Provides theoretical framing for CL learnability and algorithmic implications. It matters for grounding activation-update rules in formal conditions.",
+    "title": "Learnability and Algorithm for Continual Learning",
+    "url": "https://arxiv.org/abs/2306.12646",
+    "year": 2023
+  },
+  {
+    "assumptions": [
+      "Search space of compositional nonlinearities contains transferable candidates."
+    ],
+    "authors": [
+      "Yuanliang Zhang",
+      "et al."
+    ],
+    "citation": "s20",
+    "claims": [
+      "Discovered activations can outperform fixed hand-designed functions."
+    ],
+    "conclusions": [
+      "Automated activation design is promising for adaptability."
+    ],
+    "contributions": [
+      "Activation mining/search pipeline.",
+      "Cross-domain transfer analysis."
+    ],
+    "future_work": [
+      "Online/task-free activation adaptation during continual streams."
+    ],
+    "key_equations": [
+      "f(x)=\\sum_k a_k\\,\\phi_k(b_k x+c_k)",
+      "\\theta^*=\\arg\\max_\\theta \\mathbb{E}_{\\mathcal{T}}[\\mathrm{Perf}(f_\\theta,\\mathcal{T})]"
+    ],
+    "limitations": [
+      "Search cost and reproducibility sensitivity."
+    ],
+    "source_type": "paper",
+    "summary": "Explores automated discovery of activation functions with stronger cross-task generalization. It matters directly for designing adaptive nonlinearities for continual learning.",
+    "title": "Mining Generalizable Activation Functions",
+    "url": "https://arxiv.org/abs/2602.05688",
+    "year": 2026
+  },
+  {
+    "assumptions": [
+      "Smooth stochastic-like gating improves optimization/generalization."
+    ],
+    "authors": [
+      "Dan Hendrycks",
+      "Kevin Gimpel"
+    ],
+    "citation": "s21",
+    "claims": [
+      "GELU often outperforms ReLU/ELU on modern architectures."
+    ],
+    "conclusions": [
+      "Value-weighted smooth gating is effective."
+    ],
+    "contributions": [
+      "GELU activation and empirical benchmarking."
+    ],
+    "future_work": [
+      "Dynamic parameterized GELU variants."
+    ],
+    "key_equations": [
+      "\\mathrm{GELU}(x)=x\\Phi(x)=0.5x\\left(1+\\mathrm{erf}(x/\\sqrt{2})\\right)"
+    ],
+    "limitations": [
+      "No continual-adaptation mechanism built in."
+    ],
+    "source_type": "paper",
+    "summary": "Defines GELU, a smooth nonlinearity weighting inputs by value via Gaussian CDF. It matters as a baseline non-saturating activation with stable gradients.",
+    "title": "Gaussian Error Linear Units (GELUs)",
+    "url": "https://arxiv.org/abs/1606.08415",
+    "year": 2016
+  },
+  {
+    "assumptions": [
+      "Inputs satisfy independence/finite variance approximations.",
+      "Network architecture conditions for contraction hold."
+    ],
+    "authors": [
+      "Gunter Klambauer",
+      "Thomas Unterthiner",
+      "Andreas Mayr",
+      "Sepp Hochreiter"
+    ],
+    "citation": "s22",
+    "claims": [
+      "Layer statistics converge to stable region without batch norm."
+    ],
+    "conclusions": [
+      "Activation design can enforce statistical stability."
+    ],
+    "contributions": [
+      "SELU activation and self-normalization theory."
+    ],
+    "future_work": [
+      "Self-normalizing activations for modern deep architectures and CL."
+    ],
+    "key_equations": [
+      "\\mathrm{SELU}(x)=\\lambda\\begin{cases}x,&x>0\\\\\\alpha(e^x-1),&x\\le0\\end{cases}",
+      "(\\mu',\\sigma'^2)=g(\\mu,\\sigma^2)"
+    ],
+    "limitations": [
+      "Assumptions can weaken under residual/attention architectures."
+    ],
+    "source_type": "paper",
+    "summary": "Introduces SELU and fixed-point analysis showing mean/variance contraction toward stable values. It matters for the self-stabilization requirement in deep continual networks.",
+    "title": "Self-Normalizing Neural Networks",
+    "url": "https://arxiv.org/abs/1706.02515",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Search spaces include transferable nonlinear forms."
+    ],
+    "authors": [
+      "Prajit Ramachandran",
+      "Barret Zoph",
+      "Quoc V. Le"
+    ],
+    "citation": "s23",
+    "claims": [
+      "Swish improves accuracy on multiple benchmarks."
+    ],
+    "conclusions": [
+      "Automated discovery is effective for activation design."
+    ],
+    "contributions": [
+      "Activation-function search methodology; Swish."
+    ],
+    "future_work": [
+      "Task-aware or continual activation search."
+    ],
+    "key_equations": [
+      "\\mathrm{Swish}(x)=x\\cdot\\sigma(\\beta x)"
+    ],
+    "limitations": [
+      "Search can be computationally expensive."
+    ],
+    "source_type": "paper",
+    "summary": "Discovers Swish via automatic search and reports improved performance over ReLU in several settings. It matters as evidence that activation search can outperform fixed handcrafted choices.",
+    "title": "Searching for Activation Functions",
+    "url": "https://arxiv.org/abs/1710.05941",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Smooth non-monotonicity helps optimization landscapes."
+    ],
+    "authors": [
+      "Diganta Misra"
+    ],
+    "citation": "s24",
+    "claims": [
+      "Competitive or improved performance vs ReLU/Swish in many settings."
+    ],
+    "conclusions": [
+      "Curved smooth activations can help representation quality."
+    ],
+    "contributions": [
+      "Mish definition and empirical evaluation."
+    ],
+    "future_work": [
+      "Adaptive Mish-like parameterizations for nonstationary streams."
+    ],
+    "key_equations": [
+      "\\mathrm{Mish}(x)=x\\tanh(\\ln(1+e^x))"
+    ],
+    "limitations": [
+      "No explicit continual-learning mechanism."
+    ],
+    "source_type": "paper",
+    "summary": "Introduces Mish activation with smooth non-monotonic behavior and empirical gains across tasks. It matters as a non-saturating baseline with richer curvature than ReLU.",
+    "title": "Mish: A Self Regularized Non-Monotonic Activation Function",
+    "url": "https://arxiv.org/abs/1908.08681",
+    "year": 2019
+  },
+  {
+    "assumptions": [
+      "Per-channel activation parameters can be trained stably."
+    ],
+    "authors": [
+      "Xiangyu Jin",
+      "Chao Xu",
+      "Jiashi Feng",
+      "Yizhou Yu",
+      "Dahua Lin"
+    ],
+    "citation": "s25",
+    "claims": [
+      "SReLU outperforms common fixed activations in tested CNNs."
+    ],
+    "conclusions": [
+      "Low-parameter adaptive nonlinearities are effective."
+    ],
+    "contributions": [
+      "Learnable piecewise activation with few parameters."
+    ],
+    "future_work": [
+      "Online adaptation of piecewise parameters under shift."
+    ],
+    "key_equations": [
+      "f(x)=\\begin{cases}t_l+a_l(x-t_l),&x\\le t_l\\\\x,&t_l<x<t_r\\\\t_r+a_r(x-t_r),&x\\ge t_r\\end{cases}"
+    ],
+    "limitations": [
+      "Not designed for explicit continual adaptation."
+    ],
+    "source_type": "paper",
+    "summary": "Proposes SReLU, a learnable piecewise-linear activation with left/right slopes and thresholds. It matters for lightweight parameterized activations relevant to dynamic CL designs.",
+    "title": "Deep Learning with S-shaped Rectified Linear Activation Units",
+    "url": "https://arxiv.org/abs/1512.07030",
+    "year": 2015
+  },
+  {
+    "assumptions": [
+      "Input-conditioned coefficients can be predicted with low overhead."
+    ],
+    "authors": [
+      "Chenhao Chen",
+      "Mingyu Zhang",
+      "Yuhao Zhao",
+      "et al."
+    ],
+    "citation": "s26",
+    "claims": [
+      "Dynamic activations improve representational capacity and accuracy."
+    ],
+    "conclusions": [
+      "Activation adaptivity can deliver gains with modest overhead."
+    ],
+    "contributions": [
+      "Context-adaptive activation family for CNNs."
+    ],
+    "future_work": [
+      "Continual-learning-aware dynamic activation schedules."
+    ],
+    "key_equations": [
+      "f(x)=\\max_{k\\in\\{1..K\\}}(a_k(x)x+b_k(x))"
+    ],
+    "limitations": [
+      "Conditioning modules add complexity; CL behavior not directly studied."
+    ],
+    "source_type": "paper",
+    "summary": "Conditions ReLU parameters on input context, creating dynamic piecewise-linear activations. It matters as a direct precursor to online adaptive activation in continual settings.",
+    "title": "Dynamic ReLU",
+    "url": "https://arxiv.org/abs/2003.10027",
+    "year": 2020
+  },
+  {
+    "assumptions": [
+      "Learnable activation coefficients can be optimized robustly."
+    ],
+    "authors": [
+      "Ningning Ma",
+      "Xiaolong Zhang",
+      "Hai-Tao Zheng",
+      "Jian Sun"
+    ],
+    "citation": "s27",
+    "claims": [
+      "ACON variants yield consistent gains in vision backbones."
+    ],
+    "conclusions": [
+      "Learning activation shape is practical and beneficial."
+    ],
+    "contributions": [
+      "Parameterized activation framework with meta-gating."
+    ],
+    "future_work": [
+      "Task-free online adaptation of activation parameters."
+    ],
+    "key_equations": [
+      "f(x)=(p_1-p_2)x\\cdot\\sigma(\\beta (p_1-p_2)x)+p_2x"
+    ],
+    "limitations": [
+      "No explicit continual forgetting analysis."
+    ],
+    "source_type": "paper",
+    "summary": "Introduces ACON family and meta-ACON gating, where activation shape is learnable and data-dependent. It matters for designing controllable plasticity in nonlinearities.",
+    "title": "Activate or Not: Learning Customized Activation",
+    "url": "https://arxiv.org/abs/2009.04759",
+    "year": 2020
+  },
+  {
+    "assumptions": [
+      "Sequential robotic task suites model realistic nonstationary RL."
+    ],
+    "authors": [
+      "Marta Wo\u0142czyk",
+      "Michal Zajac",
+      "Razvan Pascanu",
+      "Lukasz Kucinski"
+    ],
+    "citation": "s28",
+    "claims": [
+      "Existing CL methods struggle on long-horizon robotic sequences."
+    ],
+    "conclusions": [
+      "Benchmark reveals significant stability-plasticity challenges."
+    ],
+    "contributions": [
+      "Standardized continual RL benchmark and code."
+    ],
+    "future_work": [
+      "Broader domains and stronger task-agnostic baselines."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Primarily MuJoCo/MetaWorld scope; transfer to other domains is open."
+    ],
+    "source_type": "paper",
+    "summary": "Introduces the Continual World benchmark (CW10/CW20) for continual RL using MetaWorld tasks, with baselines and reproducible scripts. It matters as a mandatory dataset/benchmark source for evaluating activation-based CL in RL.",
+    "title": "Continual World: A Robotic Benchmark for Continual Reinforcement Learning",
+    "url": "https://arxiv.org/abs/2105.10919",
+    "year": 2021
+  },
+  {
+    "assumptions": [
+      "Hierarchical structure can capture recurring subproblems across streams."
+    ],
+    "authors": [
+      "Tomer Geva",
+      "Ravid Shwartz-Ziv",
+      "et al."
+    ],
+    "citation": "s29",
+    "claims": [
+      "Improves retention and transfer without explicit task labels."
+    ],
+    "conclusions": [
+      "Structured latent organization supports task-free continual adaptation."
+    ],
+    "contributions": [
+      "Task-agnostic hierarchical continual algorithm."
+    ],
+    "future_work": [
+      "Scaling to multimodal and larger architectures."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Implementation complexity and sensitivity to hierarchy design."
+    ],
+    "source_type": "paper",
+    "summary": "Presents a hierarchical task-agnostic CL algorithm that adapts structure without explicit task IDs. It matters directly for the user\u2019s no-task-identity constraint.",
+    "title": "A Hierarchically Structured Task-Agnostic Continual Learning Algorithm",
+    "url": "https://www.nature.com/articles/s42256-023-00635-7",
+    "year": 2023
+  },
+  {
+    "assumptions": [
+      "Application constraints significantly shape viable CL methods."
+    ],
+    "authors": [
+      "Payal Gupta",
+      "Shilpi Choudhary"
+    ],
+    "citation": "s30",
+    "claims": [
+      "Real-world CL requires stronger robustness and efficiency guarantees."
+    ],
+    "conclusions": [
+      "Bridging benchmark and deployment gaps is a central CL priority."
+    ],
+    "contributions": [
+      "Cross-domain CL deployment synthesis."
+    ],
+    "future_work": [
+      "Standardized realistic continual benchmarks and protocols."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Review breadth limits methodological depth per subdomain."
+    ],
+    "source_type": "paper",
+    "summary": "Reviews deployment-oriented CL challenges across application domains. It matters for aligning activation-function proposals with practical constraints (compute, memory, robustness).",
+    "title": "Continual Learning in Real World Applications: A Review",
+    "url": "https://www.nature.com/articles/s41598-024-54776-9",
+    "year": 2024
+  },
+  {
+    "assumptions": [
+      "MuJoCo and MetaWorld dependencies are available.",
+      "Task sequences like CW10/CW20 represent CL stress tests."
+    ],
+    "authors": [
+      "awarelab"
+    ],
+    "citation": "s31",
+    "claims": [
+      "Provides reproducible protocol for continual RL baselines."
+    ],
+    "conclusions": [
+      "Useful codebase for evaluating adaptive activation methods in RL streams."
+    ],
+    "contributions": [
+      "Executable benchmark code and experiment scripts."
+    ],
+    "future_work": [
+      "Update dependencies and expand benchmark scenarios."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "No explicit OSS license file in repository root."
+    ],
+    "source_type": "paper",
+    "summary": "Reference implementation and scripts for continual RL experiments (single-task, continual, multi-task), with reproducibility scripts and benchmark setup details.",
+    "title": "Continual World GitHub Repository",
+    "url": "https://github.com/awarelab/continual_world",
+    "year": 2021
+  },
+  {
+    "assumptions": [
+      "Modular strategy interfaces can standardize CL experiments."
+    ],
+    "authors": [
+      "ContinualAI"
+    ],
+    "citation": "s32",
+    "claims": [
+      "Enables consistent evaluation across CL methods."
+    ],
+    "conclusions": [
+      "Good backbone for activation-function ablations."
+    ],
+    "contributions": [
+      "Research tooling for CL benchmarking."
+    ],
+    "future_work": [
+      "Expanded support for online/task-free RL CL."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Coverage depends on available plugins and scenario implementations."
+    ],
+    "source_type": "paper",
+    "summary": "Widely used CL library offering benchmark streams, methods, metrics, and logging utilities for reproducible experiments.",
+    "title": "Avalanche GitHub Repository",
+    "url": "https://github.com/ContinualAI/avalanche",
+    "year": 2021
+  },
+  {
+    "assumptions": [
+      "Benchmark tasks reflect transfer and adaptation structure in manipulation."
+    ],
+    "authors": [
+      "Tianhe Yu",
+      "Deirdre Quillen",
+      "et al."
+    ],
+    "citation": "s33",
+    "claims": [
+      "Provides rigorous evaluation framework for transfer-capable RL methods."
+    ],
+    "conclusions": [
+      "Useful basis for continual RL streams."
+    ],
+    "contributions": [
+      "Standardized multi-task/meta-RL benchmark."
+    ],
+    "future_work": [
+      "Harder real-world and long-horizon benchmark variants."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Simulation-to-real gap."
+    ],
+    "source_type": "paper",
+    "summary": "Defines Meta-World robotic task suite used by Continual World. It matters because benchmark assumptions inherit from this environment and task distribution.",
+    "title": "Meta-World: A Benchmark and Evaluation for Multi-Task and Meta Reinforcement Learning",
+    "url": "https://arxiv.org/abs/1910.10897",
+    "year": 2019
+  },
+  {
+    "assumptions": [
+      "Permutation-induced task changes model nonstationarity."
+    ],
+    "authors": [
+      "Goodfellow et al. benchmark usage in CL literature"
+    ],
+    "citation": "s34",
+    "claims": [
+      "Useful for controlled forgetting comparisons."
+    ],
+    "conclusions": [
+      "Common first-pass benchmark but limited realism."
+    ],
+    "contributions": [
+      "Low-cost, widely used CL benchmark protocol."
+    ],
+    "future_work": [
+      "Use alongside realistic streams (CIFAR/Omniglot/RL)."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Unrealistic task semantics and low complexity."
+    ],
+    "source_type": "paper",
+    "summary": "Standard synthetic continual-learning benchmark creating sequential tasks by pixel permutation of MNIST. It matters for rapid controlled forgetting diagnostics.",
+    "title": "Permuted MNIST Benchmark Setup",
+    "url": "https://paperswithcode.com/dataset/permuted-mnist",
+    "year": 2013
+  },
+  {
+    "assumptions": [
+      "Class splits approximate incremental category learning."
+    ],
+    "authors": [
+      "CL community benchmark protocol"
+    ],
+    "citation": "s35",
+    "claims": [
+      "Exposes severe forgetting in naive fine-tuning."
+    ],
+    "conclusions": [
+      "Essential baseline benchmark for activation CL proposals."
+    ],
+    "contributions": [
+      "Standard class-incremental evaluation setting."
+    ],
+    "future_work": [
+      "Broader domain-shift and compositional streams."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Limited domain diversity."
+    ],
+    "source_type": "paper",
+    "summary": "Class-incremental benchmark splitting CIFAR classes across sequential stages. It matters for measuring representation drift and forgetting in vision streams.",
+    "title": "Split CIFAR Benchmark Setup",
+    "url": "https://paperswithcode.com/dataset/cifar-100",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Teacher outputs encode transferable prior knowledge."
+    ],
+    "authors": [
+      "Xu et al."
+    ],
+    "citation": "s36",
+    "claims": [
+      "Distillation remains a core retention mechanism across scales."
+    ],
+    "conclusions": [
+      "Distillation design choices strongly affect stability and transfer."
+    ],
+    "contributions": [
+      "Taxonomy of distillation objectives and settings."
+    ],
+    "future_work": [
+      "Online distillation in nonstationary continual streams."
+    ],
+    "key_equations": [
+      "L=\\alpha L_{hard}+(1-\\alpha)T^2 KL(p_T^{teacher}||p_T^{student})"
+    ],
+    "limitations": [
+      "Focus is LLM-centric rather than continual-learning benchmarks."
+    ],
+    "source_type": "paper",
+    "summary": "Surveys distillation mechanisms relevant to preserving prior behaviors under model updates; useful as auxiliary perspective for continual retention losses.",
+    "title": "A Survey on Knowledge Distillation of Large Language Models",
+    "url": "https://arxiv.org/abs/2402.13116",
+    "year": 2024
+  },
+  {
+    "assumptions": [
+      "First-order approximations can capture useful meta-gradients for CL."
+    ],
+    "authors": [
+      "Pham et al."
+    ],
+    "citation": "s37",
+    "claims": [
+      "First-order methods can remain competitive for continual adaptation."
+    ],
+    "conclusions": [
+      "Meta-learning remains viable when efficiency constraints are tight."
+    ],
+    "contributions": [
+      "Computationally lighter meta-learning CL formulation."
+    ],
+    "future_work": [
+      "Task-agnostic online meta-learning with dynamic activations."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Performance may lag second-order variants in some regimes."
+    ],
+    "source_type": "paper",
+    "summary": "Studies first-order meta-learning strategies for continual adaptation with reduced computational overhead.",
+    "title": "First-Order Meta-Learning for Continual Learning",
+    "url": "https://openreview.net/forum?id=USFJ4Y6mTt",
+    "year": 2023
+  }
+]

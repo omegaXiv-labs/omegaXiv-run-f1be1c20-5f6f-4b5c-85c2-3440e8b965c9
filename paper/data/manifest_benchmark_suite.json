@@ -1,0 +1,19 @@
+{
+  "dataset_id": "validation_benchmark_suite_manifest",
+  "kind": "benchmark_manifest",
+  "description": "Benchmark-family manifest used by experiment-design mapping for h1-h4 and cross-ablation checks.",
+  "benchmarks": [
+    "PermutedMNIST-20",
+    "SplitCIFAR100-10",
+    "Sequential Omniglot",
+    "Synthetic bounded-drift Gaussian-mixture stream",
+    "Synthetic alternating-conflict stream"
+  ],
+  "protocol": {
+    "task_id_usage": "none",
+    "mask_usage": "none",
+    "metrics": ["ACC", "BWT", "FWT", "Forgetting Index", "Bounded-variance compliance", "Regret slope"],
+    "seeds": [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 67, 71, 79, 89, 101]
+  },
+  "license": "Manifest metadata only"
+}

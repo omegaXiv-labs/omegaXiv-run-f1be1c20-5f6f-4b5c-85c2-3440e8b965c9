@@ -1,0 +1,3 @@
+selected_method,regime,mean_forgetting_selected,mean_forgetting_gelu,cohen_d_forgetting_improvement
+Proposed full model,bounded,0.09429844884693198,0.19809844884693195,9.772813318331691
+Proposed full model,stress,0.12303596601955626,0.2520359660195562,27.841494045895445

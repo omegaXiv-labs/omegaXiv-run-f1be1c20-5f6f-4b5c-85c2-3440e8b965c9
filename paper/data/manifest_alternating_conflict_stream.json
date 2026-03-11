@@ -1,0 +1,15 @@
+{
+  "dataset_id": "synthetic_alternating_conflict_stream",
+  "kind": "generated_stream_definition",
+  "source": "local_generator",
+  "description": "Alternating-conflict stream for h4 impossibility boundary stress tests.",
+  "generation": {
+    "gamma_margin_values": [0.0, 0.05, 0.1, 0.2, 0.3],
+    "switch_period_values": [1, 5, 20, 100],
+    "stream_length_values": [5000, 10000, 20000],
+    "noise_rate_values": [0.0, 0.05, 0.1],
+    "seed_policy": "fixed seed grid from simulation_config.json"
+  },
+  "license": "Synthetic generated data (no third-party license)",
+  "local_artifact": "paper/data/simulated_validation_runs.csv"
+}

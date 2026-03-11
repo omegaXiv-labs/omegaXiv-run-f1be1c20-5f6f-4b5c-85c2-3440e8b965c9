@@ -1,0 +1,20 @@
+{
+  "methods": [
+    "Proposed full model",
+    "Proposed without novelty term",
+    "Proposed without utility term",
+    "Proposed without slow anchor",
+    "Proposed without folding loss",
+    "Static GELU",
+    "GELU",
+    "SELU",
+    "ReLU",
+    "GELU+LayerNorm",
+    "SI+SELU",
+    "EWC+GELU",
+    "A-GEM+GELU",
+    "DER++",
+    "SupSup (mask-based reference)"
+  ],
+  "seeds": [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 67, 71, 79, 89, 101]
+}

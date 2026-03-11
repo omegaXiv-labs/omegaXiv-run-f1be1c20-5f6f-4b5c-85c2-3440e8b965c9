@@ -1,0 +1,7 @@
+check_id,description,value,threshold,pass
+h1_bounded_compliance,Bounded drift compliance >= 0.95 for proposed method,0.9522179797895909,0.95,True
+h1_stress_violation_direction,Stress drift should reduce compliance vs bounded regime,-0.03136637698480593,0.0,True
+h1_forgetting_vs_gelu,Forgetting improvement over GELU >= 10%,0.5239818918532011,0.1,True
+h4_static_positive_slope,Static baselines have positive regret slope under high conflict,0.404889447418777,0.0,True
+h4_dynamic_reduction,Dynamic model slope reduction >= 30% vs best static,0.42706765745606345,0.3,True
+h4_boundary_weakening,Boundary case weakens slope vs high conflict,-0.30584014548913524,0.0,True

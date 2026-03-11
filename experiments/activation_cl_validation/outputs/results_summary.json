@@ -1,0 +1,143 @@
+{
+  "output_dir": "experiments/activation_cl_validation/outputs",
+  "figures": [
+    "paper/figures/validation_panels.pdf",
+    "paper/figures/ablation_panels.pdf"
+  ],
+  "figure_captions": {
+    "paper/figures/validation_panels.pdf": {
+      "panels": {
+        "A": "Bounded-variance compliance versus drift for Proposed, GELU, and SELU under h1 regimes.",
+        "B": "Forgetting index versus drift for the same methods with 95% confidence intervals across seeds.",
+        "C": "Regret-slope scaling with conflict margin at short switch periods for h4 stress regimes.",
+        "D": "Forgetting-floor trend versus conflict margin, contrasting static and stateful methods."
+      },
+      "variables": {
+        "drift_delta": "Adjacent-stream distribution shift magnitude (unitless).",
+        "gamma_margin": "Alternating-domain conflict margin (unitless).",
+        "bounded_variance_compliance": "Fraction of runs satisfying variance-bound criterion.",
+        "regret_slope": "Estimated slope of dynamic regret over stream length (loss/step)."
+      },
+      "key_takeaways": [
+        "Proposed full model stays near the >=0.95 compliance threshold in bounded drift and degrades under stress drift as theory predicts.",
+        "Static baselines show steeper regret-slope increase in high-conflict regimes than the proposed stateful method."
+      ],
+      "uncertainty": "Line bands are 95% confidence intervals over seed-level runs."
+    },
+    "paper/figures/ablation_panels.pdf": {
+      "panels": {
+        "A": "Cross-hypothesis ablation impact on bounded-variance compliance.",
+        "B": "Cross-hypothesis ablation impact on forgetting index."
+      },
+      "variables": {
+        "method": "Full method and ablated variants (no_novelty/no_utility/no_slow_anchor/no_fold/static).",
+        "bounded_variance_compliance": "Variance-bound pass fraction.",
+        "forgetting_index": "Retention loss summary metric (unitless)."
+      },
+      "key_takeaways": [
+        "Removing the slow anchor produces the largest stability degradation.",
+        "Static GELU has the weakest forgetting behavior in the ablation suite."
+      ],
+      "uncertainty": "Bar whiskers show 95% confidence intervals over seeded runs."
+    }
+  },
+  "tables": [
+    "paper/tables/validation_metrics_summary.csv",
+    "paper/tables/theorem_assumption_checks.csv",
+    "paper/tables/regret_slope_ci.csv",
+    "paper/tables/confirmatory_regime_check.csv",
+    "paper/tables/forgetting_floor.csv"
+  ],
+  "datasets": [
+    "paper/data/simulated_validation_runs.csv",
+    "paper/data/manifest_bounded_drift_stream.json",
+    "paper/data/manifest_alternating_conflict_stream.json",
+    "paper/data/manifest_benchmark_suite.json"
+  ],
+  "sympy_report": "experiments/activation_cl_validation/outputs/sympy_validation_report.json",
+  "readability_checks": [
+    {
+      "pdf_path": "paper/figures/validation_panels.pdf",
+      "raster_path": "experiments/activation_cl_validation/outputs/validation_panels_preview.png",
+      "width_px": 2016,
+      "height_px": 1440,
+      "grayscale_std": 38.60713182475572
+    },
+    {
+      "pdf_path": "paper/figures/ablation_panels.pdf",
+      "raster_path": "experiments/activation_cl_validation/outputs/ablation_panels_preview.png",
+      "width_px": 2016,
+      "height_px": 720,
+      "grayscale_std": 62.29627102727786
+    }
+  ],
+  "key_metrics": {
+    "proposed_acc_mean": 0.7347903921388689,
+    "gelu_acc_mean": 0.59086150324998,
+    "proposed_forgetting_mean": 0.13995356356382835,
+    "gelu_forgetting_mean": 0.27689462137668186,
+    "forgetting_improvement_vs_gelu": 0.49456019453177336,
+    "proposed_runtime_overhead_pct_mean": 8.11003652380673,
+    "proposed_param_overhead_pct_mean": 4.000000000000002
+  },
+  "acceptance_snapshot": [
+    {
+      "check_id": "h1_bounded_compliance",
+      "description": "Bounded drift compliance >= 0.95 for proposed method",
+      "value": 0.9522179797895909,
+      "threshold": 0.95,
+      "pass": true
+    },
+    {
+      "check_id": "h1_stress_violation_direction",
+      "description": "Stress drift should reduce compliance vs bounded regime",
+      "value": -0.03136637698480593,
+      "threshold": 0.0,
+      "pass": true
+    },
+    {
+      "check_id": "h1_forgetting_vs_gelu",
+      "description": "Forgetting improvement over GELU >= 10%",
+      "value": 0.5239818918532011,
+      "threshold": 0.1,
+      "pass": true
+    },
+    {
+      "check_id": "h4_static_positive_slope",
+      "description": "Static baselines have positive regret slope under high conflict",
+      "value": 0.404889447418777,
+      "threshold": 0.0,
+      "pass": true
+    },
+    {
+      "check_id": "h4_dynamic_reduction",
+      "description": "Dynamic model slope reduction >= 30% vs best static",
+      "value": 0.42706765745606345,
+      "threshold": 0.3,
+      "pass": true
+    },
+    {
+      "check_id": "h4_boundary_weakening",
+      "description": "Boundary case weakens slope vs high conflict",
+      "value": -0.30584014548913524,
+      "threshold": 0.0,
+      "pass": true
+    }
+  ],
+  "confirmatory_analysis": {
+    "name": "Regime-stratified post-selection effect-size check",
+    "artifact": "paper/tables/confirmatory_regime_check.csv",
+    "notes": "Computed Cohen's d for forgetting improvement of selected top bounded-regime method vs GELU in bounded and stress regimes."
+  },
+  "run_duration_sec": 2.381338119506836,
+  "sympy_all_passed": true,
+  "executed_experiments": [
+    "exp_h1_moment_stability_bounded_drift",
+    "exp_h4_static_impossibility_counterexample_stress",
+    "exp_cross_hypothesis_ablation_and_proof_empirical_bridge"
+  ],
+  "missing_planned_experiments": [
+    "exp_h2_task_agnostic_controller_benchmark_suite",
+    "exp_h3_representation_folding_compositionality_probes"
+  ]
+}
