@@ -1,0 +1,45 @@
+{
+  "package": {
+    "handle": "cl-act",
+    "distribution_name": "activation-cl-validation",
+    "import_name": "activation_cl_validation"
+  },
+  "nodes": [
+    {"name": "activation-cl-validation", "type": "distribution"},
+    {"name": "numpy", "type": "runtime", "spec": ">=1.26,<3", "required_by": ["activation-cl-validation"]},
+    {"name": "pandas", "type": "runtime", "spec": ">=2.2,<3", "required_by": ["activation-cl-validation"]},
+    {"name": "matplotlib", "type": "runtime", "spec": ">=3.8,<4", "required_by": ["activation-cl-validation"]},
+    {"name": "seaborn", "type": "runtime", "spec": ">=0.13,<1", "required_by": ["activation-cl-validation"]},
+    {"name": "sympy", "type": "runtime", "spec": ">=1.12,<2", "required_by": ["activation-cl-validation"]},
+    {"name": "pypdfium2", "type": "optional", "spec": ">=4.30,<5", "required_by": ["activation-cl-validation"]},
+    {"name": "python-dateutil", "type": "transitive", "spec": ">=2.8.2", "required_by": ["pandas", "matplotlib"]},
+    {"name": "pytz", "type": "transitive", "spec": ">=2020.1", "required_by": ["pandas"]},
+    {"name": "tzdata", "type": "transitive", "spec": ">=2022.7", "required_by": ["pandas"]},
+    {"name": "contourpy", "type": "transitive", "spec": ">=1.0.1", "required_by": ["matplotlib"]},
+    {"name": "cycler", "type": "transitive", "spec": ">=0.10", "required_by": ["matplotlib"]},
+    {"name": "fonttools", "type": "transitive", "spec": ">=4.22.0", "required_by": ["matplotlib"]},
+    {"name": "kiwisolver", "type": "transitive", "spec": ">=1.3.1", "required_by": ["matplotlib"]},
+    {"name": "packaging", "type": "transitive", "spec": ">=20.0", "required_by": ["matplotlib"]},
+    {"name": "pillow", "type": "transitive", "spec": ">=8", "required_by": ["matplotlib"]},
+    {"name": "pyparsing", "type": "transitive", "spec": ">=3", "required_by": ["matplotlib"]}
+  ],
+  "edges": [
+    ["activation-cl-validation", "numpy"],
+    ["activation-cl-validation", "pandas"],
+    ["activation-cl-validation", "matplotlib"],
+    ["activation-cl-validation", "seaborn"],
+    ["activation-cl-validation", "sympy"],
+    ["activation-cl-validation", "pypdfium2"],
+    ["pandas", "python-dateutil"],
+    ["pandas", "pytz"],
+    ["pandas", "tzdata"],
+    ["matplotlib", "contourpy"],
+    ["matplotlib", "cycler"],
+    ["matplotlib", "fonttools"],
+    ["matplotlib", "kiwisolver"],
+    ["matplotlib", "packaging"],
+    ["matplotlib", "pillow"],
+    ["matplotlib", "pyparsing"],
+    ["matplotlib", "python-dateutil"]
+  ]
+}

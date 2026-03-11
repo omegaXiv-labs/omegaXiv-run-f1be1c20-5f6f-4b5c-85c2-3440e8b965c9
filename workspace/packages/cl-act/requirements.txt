@@ -1,0 +1,9 @@
+# Runtime dependencies for activation_cl_validation package
+numpy>=1.26,<3
+pandas>=2.2,<3
+matplotlib>=3.8,<4
+seaborn>=0.13,<1
+sympy>=1.12,<2
+
+# Optional runtime dependency for PDF preview/raster QA
+pypdfium2>=4.30,<5
